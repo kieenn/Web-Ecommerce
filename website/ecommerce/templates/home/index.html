@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Store</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+
+            <h1><a href="#">Clothing Store</a></h1>
+
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="{%url 'products'%}">Products</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Cart</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-text">
+                    <h2>Discover New Styles</h2>
+                    <p>Explore our latest collection of trendy clothing for men, women, and kids.</p>
+                    <a href="#" class="btn">Shop Now</a>
+                </div>
+                <div class="hero-image">
+                    <img src="images/hero-image.jpg" alt="Hero Image">
+                </div>
+            </div>
+        </section>
+
+        <section class="latest-products">
+            <div class="container">
+                <h2>Latest Products</h2>
+                <div class="product-grid">
+                    <!-- Product 1 -->
+                    <div class="product">
+                        <a href="product.html?id=1"> <img src="images/product-1.jpg" alt="Product 1"></a>
+                        <h3>Product Name</h3>
+                        <p class="price">$49.99</p>
+
+                    </div>
+                    <!-- Product 2 -->
+                    <div class="product">
+                        <a href="product.html?id=2"> <img src="images/product-2.jpg" alt="Product 2"></a>
+                        <h3>Product Name</h3>
+                        <p class="price">$79.99</p>
+
+                    </div>
+                </div>
+                <div class = "more">
+                    <a class="more-button" href="{%url 'products' %}">More</a>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="categories">
+            <div class="container">
+                <h2>Our Categories</h2>
+                <div class="category-grid">
+                    <div class="category">
+                        <img src="images/men.jpg" alt="Men's Clothing">
+                        <h3>Men's Wear</h3>
+                    </div>
+                    <div class="category">
+                        <img src="images/women.jpg" alt="Women's Clothing">
+                        <h3>Women's Wear</h3>
+                    </div>
+                    <div class="category">
+                        <img src="images/kids.jpg" alt="Kids' Clothing">
+                        <h3>Kids' Wear</h3>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="about">
+            <div class="container">
+                <h2>About Us</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Clothing Store. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

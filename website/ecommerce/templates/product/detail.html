@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <!-- Same header as index.html -->
+    </header>
+
+    <main>
+        <section class="product-details">
+            <div class="container">
+                <div class="product-image">
+                    <img src="images/product-1.jpg" alt="Product 1">
+                </div>
+                <div class="product-info">
+                    <h2>Product Name</h2>
+                    <p class="price">$49.99</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Donec sed odio dui.</p>
+                    <div class="sizes">
+                        <h3>Size:</h3>
+                        <select>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </div>
+                    <div class="colors">
+                        <h3>Color:</h3>
+                        <ul>
+                            <li><span class="color-swatch" style="background-color: #008000;"></span></li>
+                            <li><span class="color-swatch" style="background-color: #ff0000;"></span></li>
+                            <li><span class="color-swatch" style="background-color: #0000ff;"></span></li>
+                        </ul>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Same footer as index.html -->
+    </footer>
+</body>
+</html>

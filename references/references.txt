@@ -1,0 +1,1 @@
+database build: https://dev.to/ezzdinatef/ecommerce-database-design-1ggc
