@@ -1,67 +1,115 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clothing Store - Products</title>
-    <link rel="stylesheet" href="{%static 'css/styles.css'%}">
-</head>
-<body>
-    <header>
-        <!-- Same header as index.html -->
-    </header>
+{% extends '../base/base.html' %}
+{% block title %}
+    Products
+{% endblock %}
+{% block products %} active {% endblock %}
+{% block content %}
 
-    <main>
+    <main class="container-products">
+        <section class="filters">
+            <h2 class="section-title">Filters</h2>
+            <div class="filter-group">
+                <label for="category-filter">Category:</label>
+                <select id="category-filter">
+                    <option value="">All Categories</option>
+                    <option value="category1">Category 1</option>
+                    <option value="category2">Category 2</option>
+                    <option value="category3">Category 3</option>
+                    <!-- Add more categories -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="size-filter">Size:</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="size-s" value="S">
+                    <label for="size-s">S</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="size-m" value="M">
+                    <label for="size-m">M</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="size-l" value="L">
+                    <label for="size-l">L</label>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label for="color-filter">Color:</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="color-red" value="red">
+                    <label for="color-red" style="color: red;">Red</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="color-blue" value="blue">
+                    <label for="color-blue" style="color: blue;">Blue</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="color-green" value="green">
+                    <label for="color-green" style="color: green;">Green</label>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label for="min-price">Min Price:</label>
+                <input type="number" id="min-price" placeholder="Min Price">
+                <label for="max-price">Max Price:</label>
+                <input type="number" id="max-price" placeholder="Max Price">
+            </div>
+        </section>
+
         <section class="products">
-            <div class="container">
-                <h2>Our Products</h2>
-                <div class="filter-options">
-                    <div class="filter-group">
-                        <h3>Category:</h3>
-                        <select id="category-filter">
-                            <option value="">All Categories</option>
-                            <option value="men">Men's Wear</option>
-                            <option value="women">Women's Wear</option>
-                            <option value="kids">Kids' Wear</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <h3>Size:</h3>
-                        <select id="size-filter">
-                            <option value="">All Sizes</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <h3>Color:</h3>
-                        <ul id="color-filter">
-                            <li><span class="color-swatch" style="background-color: #008000;" data-color="#008000"></span></li>
-                            <li><span class="color-swatch" style="background-color: #ff0000;" data-color="#ff0000"></span></li>
-                            <li><span class="color-swatch" style="background-color: #0000ff;" data-color="#0000ff"></span></li>
-                            <!-- Add more color options as needed -->
-                        </ul>
-                    </div>
-                    <div class="filter-group">
-                        <h3>Price:</h3>
-                        <input type="range" id="price-filter" min="0" max="100" value="0" step="10">
+            <div class="toolbar">
+                <div class="sort-by">
+                    <select id="sort-select">
+                        <option value="popularity">Sort by popularity</option>
+                        <option value="price-low">Sort by price: low to high</option>
+                        <option value="price-high">Sort by price: high to low</option>
+                        <option value="newest">Sort by newest</option>
+                    </select>
+                </div>
+                <div class="results">
+                    <span>Showing all 5 results</span>
+                </div>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <div class="product">
+                    <img src="https://via.placeholder.com/250x200?text=Long+Sleeve+Tee" alt="Long Sleeve Tee">
+                    <div class="product-info">
+                        <h3>Long Sleeve Tee</h3>
+                        <p class="price">25 EGP</p>
                     </div>
                 </div>
-
-                <div class="product-grid" id="product-grid">
-                    <!-- Products will be loaded here dynamically -->
+                <div class="product">
+                    <img src="https://via.placeholder.com/250x200?text=Polo" alt="Polo">
+                    <div class="product-info">
+                        <h3>Polo</h3>
+                        <p class="price">20 EGP</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="https://via.placeholder.com/250x200?text=T-Shirt" alt="T-Shirt">
+                    <div class="product-info">
+                        <h3>T-Shirt</h3>
+                        <p class="price">18 EGP</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="https://via.placeholder.com/250x200?text=T-Shirt+with+Logo" alt="T-Shirt with Logo">
+                    <div class="product-info">
+                        <h3>T-Shirt with Logo</h3>
+                        <p class="price">18 EGP</p>
+                    </div>
+                </div>
+                <div class="product">
+                    <img src="https://via.placeholder.com/250x200?text=V-Neck+T-Shirt" alt="V-Neck T-Shirt">
+                    <div class="product-info">
+                        <h3>V-Neck T-Shirt</h3>
+                        <p class="price">EGP</p>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <!-- Same footer as index.html -->
-    </footer>
-
-    <script src="{% static 'js/script.js'%}"></script> <!-- Add a script file for filtering logic -->
-</body>
-</html>
+    <script src="script.js"></script>
+{% endblock %}

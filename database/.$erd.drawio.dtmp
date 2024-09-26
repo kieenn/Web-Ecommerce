@@ -337,27 +337,6 @@
         <mxCell id="tjKkvb1AYBIxYUPu8IMl-70" value="1,n" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="600" y="310" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="tjKkvb1AYBIxYUPu8IMl-72" value="is_default&amp;nbsp;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="305" y="110" width="130" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="tjKkvb1AYBIxYUPu8IMl-73" value="" style="endArrow=none;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="kwGnplMdTD3-A2-5UlzM-3" target="tjKkvb1AYBIxYUPu8IMl-72">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="250" y="310" as="sourcePoint" />
-            <mxPoint x="300" y="260" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="tjKkvb1AYBIxYUPu8IMl-75" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="tjKkvb1AYBIxYUPu8IMl-72" target="kwGnplMdTD3-A2-5UlzM-1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="630" y="260" as="sourcePoint" />
-            <mxPoint x="445" y="160" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="tjKkvb1AYBIxYUPu8IMl-76" value="1,1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="105" y="220" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="tjKkvb1AYBIxYUPu8IMl-78" value="1,1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="620" y="220" width="60" height="30" as="geometry" />
-        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

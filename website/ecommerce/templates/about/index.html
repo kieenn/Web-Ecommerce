@@ -1,0 +1,78 @@
+{% extends '../base/base.html' %}
+{% block title %}
+Contact
+{% endblock %}
+{% block about %} active {% endblock %}
+
+{% block content %}
+    {% load static %}
+  <div class="about py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 order-md-2">
+                        <img src="{% static 'images/img_portrait_two_af.png' %}" alt="About Us" class="img-fluid about-img rounded">
+                    </div>
+                    <div class="col-md-6 order-md-1">
+                        <h1 class="display-4 font-weight-bold mb-4">Our Story</h1>
+                        <p class="lead mb-4">
+                            Exclusive was founded in 2015 with a mission to become South Asia’s premier online shopping marketplace.
+                            We have a strong presence in Bangladesh, offering a wide range of products and serving millions of customers across the region.
+                        </p>
+                        <p class="mb-4">
+                            We pride ourselves on:
+                        </p>
+                        <ul class="list-unstyled mb-4">
+                            <li>
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                A diverse assortment of products, catering to a wide range of needs.
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                A commitment to quality and customer satisfaction.
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                A user-friendly and secure shopping experience.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row-offer mt-5">
+                    <h2 class="text-center mb-4">What We Offer</h2>
+                    
+                    <div class="offer">
+                            <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column align-items-center">
+                                <img src="{% static 'images/img_thumbs_up.svg' %}" alt="Sellers" class="mb-3" width="60">
+                                <h4 class="card-title font-weight-bold">10.5k Sellers</h4>
+                                <p class="card-text">Active sellers contributing to our diverse product range.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column align-items-center">
+                                <img src="{% static 'images/img_television.svg' %}" alt="Sales" class="mb-3" width="60">
+                                <h4 class="card-title font-weight-bold">33k Monthly Sales</h4>
+                                <p class="card-text">Growing rapidly and exceeding customer expectations.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column align-items-center">
+                                <img src="{% static 'images/img_menu.svg' %}" alt="Customers" class="mb-3" width="60">
+                                <h4 class="card-title font-weight-bold">45.5k Active Customers</h4>
+                                <p class="card-text">Loyal customers enjoy our wide selection and great service.</p>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                     
+                   
+                </div>
+            </div>
+        </div>
+{% endblock %}

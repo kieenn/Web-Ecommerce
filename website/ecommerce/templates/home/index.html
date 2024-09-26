@@ -1,104 +1,97 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clothing Store</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <header>
-        <div class="container">
-
-            <h1><a href="#">Clothing Store</a></h1>
-
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="{%url 'products'%}">Products</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Cart</a></li>
-                    <li><a href="#">Login</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
+{% extends  '../base/base.html' %}
+{% block title %}
+    Home
+{% endblock %}
+{% block home %} active {% endblock %}
+{% block content %}
+    {% load static %}
+        <main>
         <section class="hero">
             <div class="container">
-                <div class="hero-text">
-                    <h2>Discover New Styles</h2>
-                    <p>Explore our latest collection of trendy clothing for men, women, and kids.</p>
-                    <a href="#" class="btn">Shop Now</a>
-                </div>
-                <div class="hero-image">
-                    <img src="images/hero-image.jpg" alt="Hero Image">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2 class="display-4">Discover New Styles</h2>
+                        <p class="lead">
+                            Embrace the latest trends with our curated collection of stylish clothing. Discover unique designs, 
+                            vibrant colors, and comfortable fabrics that will elevate your wardrobe and turn heads wherever you go.
+                        </p>
+                        <a href="{% url 'products' %}" class="btn btn-primary">Shop Now</a>
+                    </div>
+                    <div class="col-md-6">
+                        <img src="{% static 'images/104.webp' %}" class="img-fluid" alt="Hero Image">
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="latest-products">
+        <section class="featured-products">
             <div class="container">
-                <h2>Latest Products</h2>
-                <div class="product-grid">
+                <h2 class="text-center">Featured Products</h2>
+                <div class="row mt-4">
                     <!-- Product 1 -->
-                    <div class="product">
-                        <a href="product.html?id=1"> <img src="images/product-1.jpg" alt="Product 1"></a>
-                        <h3>Product Name</h3>
-                        <p class="price">$49.99</p>
-
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <a href="product.html?id=1"> <img src="{% static 'images/103.webp' %}" class="card-img-top" alt="Product 1"></a>
+                            <div class="card-body">
+                                <h5 class="card-title">Product Name</h5>
+                                <p class="card-text price">$49.99</p>
+                                <button class="btn btn-success add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
                     </div>
                     <!-- Product 2 -->
-                    <div class="product">
-                        <a href="product.html?id=2"> <img src="images/product-2.jpg" alt="Product 2"></a>
-                        <h3>Product Name</h3>
-                        <p class="price">$79.99</p>
-
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <a href="product.html?id=2"> <img src="images/product-2.jpg" class="card-img-top" alt="Product 2"></a>
+                            <div class="card-body">
+                                <h5 class="card-title">Product Name</h5>
+                                <p class="card-text price">$79.99</p>
+                                <button class="btn btn-success add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
                     </div>
+                    <!-- More Products... -->
                 </div>
-                <div class = "more">
-                    <a class="more-button" href="{%url 'products' %}">More</a>
-                </div>
-
             </div>
         </section>
 
         <section class="categories">
             <div class="container">
-                <h2>Our Categories</h2>
-                <div class="category-grid">
-                    <div class="category">
-                        <img src="images/men.jpg" alt="Men's Clothing">
-                        <h3>Men's Wear</h3>
+                <h2 class="text-center">Our Categories</h2>
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="images/men.jpg" class="card-img-top" alt="Men's Clothing">
+                            <div class="card-body">
+                                <h5 class="card-title">Men's Wear</h5>
+                            </div>
+                        </div>
                     </div>
-                    <div class="category">
-                        <img src="images/women.jpg" alt="Women's Clothing">
-                        <h3>Women's Wear</h3>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="images/women.jpg" class="card-img-top" alt="Women's Clothing">
+                            <div class="card-body">
+                                <h5 class="card-title">Women's Wear</h5>
+                            </div>
+                        </div>
                     </div>
-                    <div class="category">
-                        <img src="images/kids.jpg" alt="Kids' Clothing">
-                        <h3>Kids' Wear</h3>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="images/kids.jpg" class="card-img-top" alt="Kids' Clothing">
+                            <div class="card-body">
+                                <h5 class="card-title">Kids' Wear</h5>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
         <section class="about">
             <div class="container">
-                <h2>About Us</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.</p>
+                <h2 class="text-center">About Us</h2>
+                <p class="lead text-center mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed diam eget risus varius blandit sit amet non magna. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.</p>
             </div>
         </section>
     </main>
-
-    <footer>
-        <div class="container">
-            <p>© 2024 Clothing Store. All Rights Reserved.</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock %}
