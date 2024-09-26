@@ -164,7 +164,6 @@ CREATE TABLE Users (
   password VARCHAR(255),
   birth_of_date DATE,
   phone_number VARCHAR(20),
- 
   created_at DATETIME DEFAULT GETDATE(),
   deleted_at DATETIME
 );
@@ -226,31 +225,32 @@ CREATE TABLE Product_Images (
   deleted_at DATETIME,
   CONSTRAINT FK_Product_Images_Products FOREIGN KEY (product_id) REFERENCES Products(id)
 );
--- Create the Product_Attributes table
-CREATE TABLE Product_Attributes (
-  id INT PRIMARY KEY, -- Manually manage id
-  type VARCHAR(10) CHECK (type IN ('color', 'size')), -- Use CHECK constraint for enum
-  value VARCHAR(255),
-  created_at DATETIME DEFAULT GETDATE(),
-  deleted_at DATETIME
-);
-
--- Create the Products_SKUs table
+-- Create Products_SKUs
 CREATE TABLE Products_SKUs (
-  id INT PRIMARY KEY, -- Manually manage id
-  product_id INT,
-  size_attribute_id INT,
-  color_attribute_id INT,
-  sku VARCHAR(255),
-  price DECIMAL(10,2), -- Use DECIMAL for price
-  quantity INT,
-  created_at DATETIME DEFAULT GETDATE(),
-  deleted_at DATETIME,
-  CONSTRAINT FK_Products_SKUs_Products FOREIGN KEY (product_id) REFERENCES Products(id),
-  CONSTRAINT FK_Products_SKUs_Size_Attribute FOREIGN KEY (size_attribute_id) REFERENCES Product_Attributes(id),
-  CONSTRAINT FK_Products_SKUs_Color_Attribute FOREIGN KEY (color_attribute_id) REFERENCES Product_Attributes(id)
+    product_id INT,
+    sku VARCHAR(255),
+    price DECIMAL(10,2),
+    quantity INT,
+    PRIMARY KEY (product_id, sku),
+    CONSTRAINT FK_Products_SKUs_Products FOREIGN KEY (product_id) REFERENCES Products(id)
 );
 
+-- Create Product_Attributes
+CREATE TABLE Product_Attributes (
+    id INT PRIMARY KEY,
+    type VARCHAR(255) unique,
+    PRIMARY KEY (id)
+);
+
+-- Create Product_Attributes_Values
+CREATE TABLE Product_Attributes_Values (
+    id INT PRIMARY KEY,
+    products_sku_id INT,
+    product_attribute_id INT,
+    value VARCHAR(255),
+    CONSTRAINT FK_Product_Attributes_Values_Products_SKUs FOREIGN KEY (products_sku_id) REFERENCES Products_SKUs(product_id, sku),
+    CONSTRAINT FK_Product_Attributes_Values_Product_Attributes FOREIGN KEY (product_attribute_id) REFERENCES Product_Attributes(id)
+);
 -- Create the Cart table
 CREATE TABLE Cart (
   id INT PRIMARY KEY, -- Manually manage id
