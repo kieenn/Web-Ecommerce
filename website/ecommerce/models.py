@@ -224,6 +224,7 @@ class AuthPermission(models.Model):
 
 
 class AuthUser(models.Model):
+    id = models.IntegerField(primary_key=True)
     password = models.CharField(max_length=128, db_collation='SQL_Latin1_General_CP1_CI_AS')
     last_login = models.DateTimeField(blank=True, null=True)
     is_superuser = models.BooleanField()
