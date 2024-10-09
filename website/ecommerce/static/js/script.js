@@ -39,10 +39,40 @@ $(document).ready(function() {
   $('#logout-button').click(function() {
     sessionStorage.clear();
   });
+
+  $('.contact-form').submit(function(e) {
+    e.preventDefault(); // Prevent default form submission
+    alert('check')
+
+    // Client-side validation (optional)
+    if (!validateForm()) {
+      return false;
+    }
+
+    var formData = $(this).serialize();
+
+    $.ajax({
+      url: 'https://api.web3forms.com/submit',
+      method: "POST",
+      data: formData,
+      dataType: 'json'
+    })
+    $('#InputName').val('')
+    $('#InputEmail1').val('')
+    $('#FormControlTextarea1').val('')
+
+    // window.location.href = 'http://localhost:8000/';
+  });
+
 });
 
 // Function to validate Vietnamese phone number
 function isValidVietnamesePhoneNumber(phoneNumber) {
   const phoneNumberRegex = /^(?:\+84|0084|0)[235789]\d{8,9}$/;
   return phoneNumberRegex.test(phoneNumber);
+}
+  function validateForm() {
+    // Add your validation logic here, e.g., checking for required fields, email format, etc.
+    // Return true if valid, false otherwise
+    return true;
 }
