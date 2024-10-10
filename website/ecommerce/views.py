@@ -47,7 +47,8 @@ def cart(request):
 
 def detail(request):
     return render(request, 'product/detail.html')
-
+def checkout(request):
+    return render(request, 'order/checkout.html')
 
 @api_view(['POST'])
 def loginhandle(request):
