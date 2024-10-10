@@ -17,20 +17,22 @@ Contact
 					<form class="contact-form" action="" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="access_key" value="11932df6-93fa-4459-b7b1-516f39a66e22">
-						<div class="form-group pt-2 pl-1">
+						<div class="form-group pt-2 pl-1" >
 							<label for="exampleInputName">Your name</label>
 							<input type="text" class="form-control" id="InputName" name="name">
+                            <p id="InputName-message" style="color: red"></p>
 						</div>
 
 						<div class="form-group pl-1">
 							<label for="exampleInputEmail1">Your email address</label>
  						 	<input type="email" class="form-control" id="InputEmail1" name="email">
+                            <p id="InputEmail-message" style="color: red"></p>
 						</div>
 
 						<div class="form-group pl-1">
     						<label for="exampleFormControlTextarea1">Your message</label>
     						<textarea class="form-control" id="FormControlTextarea1" rows="5" name="message"></textarea>
-
+                            <p id="InputText-message" style="color: red"></p>
   						</div>
   						<div class="row">
   							<div class="col-md-3 offset-md-9"><button type="submit" class="btn btn-primary">Send</button></div>

@@ -4,24 +4,38 @@ $(document).ready(function() {
   const $phone = $('#phone');
   const $password = $('#password');
 
+  /**
+   * Validates a Vietnamese phone number.
+   * @param {string} phoneNumber - The phone number to validate.
+   * @returns {boolean} True if the phone number is valid, false otherwise.
+   */
+  function isValidVietnamesePhoneNumber(phoneNumber) {
+    const phoneNumberRegex = /^(?:\+84|0084|0)[235789]\d{8,9}$/;
+    return phoneNumberRegex.test(phoneNumber);
+  }
+
+  // Handle login form submission
   $loginForm.submit(function(e) {
     e.preventDefault();
 
-    const phoneNumber = $phone.val();
-    const password = $password.val();
+    const phoneNumber = $phone.val().trim();
+    const password = $password.val().trim();
 
     $message.empty();
 
+    // Validate phone number
     if (!isValidVietnamesePhoneNumber(phoneNumber)) {
       $message.html('<p style="color: red">Invalid Vietnamese phone number format.</p>');
       return;
     }
 
-    if (!password.trim()) {
+    // Validate password
+    if (!password) {
       $message.html('<p style="color: red">Password cannot be empty.</p>');
       return;
     }
 
+    // Send login request
     $.ajax({
       url: "http://localhost:8000/loginhandle/",
       method: "POST",
@@ -29,21 +43,77 @@ $(document).ready(function() {
       dataType: "json",
       headers: {'X-CSRFToken': '{{ csrf_token }}'},
     }).done(function(response) {
-      sessionStorage.setItem('client', response.id);
-      window.location.href = 'http://localhost:8000/';
-    }).fail(function(error) {
-      alert(error);
+      if(response.status){
+        sessionStorage.setItem('client', response.id);
+        window.location.href = 'http://localhost:8000/';
+      }
+      else{
+        alert(response.message);
+      }
+    }).fail(function() {
+      alert('An error occurred during login.');
     });
   });
 
+  // Handle logout
   $('#logout-button').click(function() {
     sessionStorage.clear();
+    // Optionally redirect to login page or home page
+    // window.location.href = 'http://localhost:8000/login/';
   });
+
+  /**
+   * Validates an email address.
+   * @param {string} email - The email address to validate.
+   * @returns {boolean} True if the email is valid, false otherwise.
+   */
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  /**
+   * Validates the contact form inputs.
+   * @returns {boolean} True if all inputs are valid, false otherwise.
+   */
+  function validateForm() {
+    let isValid = true;
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    const messageRegex = /^[a-zA-Z0-9\s]+$/;
+    
+    // Validate Name
+    const name = $('#InputName').val().trim();
+    if (name.length < 3 || !nameRegex.test(name)) {
+      $('#InputName-message').html('<p>Name must be at least 3 characters long and contain only letters and spaces.</p>');
+      isValid = false;
+    } else {
+      $('#InputName-message').empty();
+    }
+
+    // Validate Message
+    const message = $('#FormControlTextarea1').val().trim();
+    if (message.length < 10 || !messageRegex.test(message)) {
+      $('#InputText-message').html('<p>Message must be at least 10 characters long and contain only letters, numbers, and spaces.</p>');
+      isValid = false;
+    } else {
+      $('#InputText-message').empty();
+    }
+
+    // Validate Email
+    const email = $('#InputEmail1').val().trim();
+    if (!validateEmail(email)) {
+      $('#InputEmail-message').html('<p>Please enter a valid email address.</p>');
+      isValid = false;
+    } else {
+      $('#InputEmail-message').empty();
+    }
+
+    return isValid;
+  }
 
   $('.contact-form').submit(function(e) {
     e.preventDefault(); // Prevent default form submission
-    alert('check')
-
+    alert('Submit Successfully')
     // Client-side validation (optional)
     if (!validateForm()) {
       return false;
@@ -56,23 +126,17 @@ $(document).ready(function() {
       method: "POST",
       data: formData,
       dataType: 'json'
-    })
-    $('#InputName').val('')
-    $('#InputEmail1').val('')
-    $('#FormControlTextarea1').val('')
+    });
 
+    // Clear form fields after submission
+    $('#InputName').val('');
+    $('#InputEmail1').val('');
+    $('#FormControlTextarea1').val('');
+
+    // Commented out redirection
     // window.location.href = 'http://localhost:8000/';
   });
 
 });
 
-// Function to validate Vietnamese phone number
-function isValidVietnamesePhoneNumber(phoneNumber) {
-  const phoneNumberRegex = /^(?:\+84|0084|0)[235789]\d{8,9}$/;
-  return phoneNumberRegex.test(phoneNumber);
-}
-  function validateForm() {
-    // Add your validation logic here, e.g., checking for required fields, email format, etc.
-    // Return true if valid, false otherwise
-    return true;
-}
+

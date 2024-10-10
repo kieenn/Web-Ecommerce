@@ -69,7 +69,7 @@ def loginhandle(request):
             else:
                 return Response({
                     "status": False,
-                    "message": "Login Successful"
+                    "message": "Login Failed"
                 })
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
