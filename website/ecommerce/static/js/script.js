@@ -112,29 +112,39 @@ $(document).ready(function() {
   }
 
   $('.contact-form').submit(function(e) {
-    e.preventDefault(); // Prevent default form submission
-    alert('Submit Successfully')
-    // Client-side validation (optional)
+    e.preventDefault();
+    
     if (!validateForm()) {
       return false;
     }
 
-    var formData = $(this).serialize();
+    const $form = $(this);
+    const $result = $('#result');
+    const formData = $form.serializeArray();
+    const object = {};
+    $.each(formData, function(_, item) {
+      object[item.name] = item.value;
+    });
+    const json = JSON.stringify(object);
+
+    $result.html("Please wait...").show();
 
     $.ajax({
       url: 'https://api.web3forms.com/submit',
-      method: "POST",
-      data: formData,
-      dataType: 'json'
+      method: 'POST',
+      data: json,
+      contentType: 'application/json',
+      dataType: 'json',
+    }).done(function(response) {
+      alert(response.message);
+    }).fail(function(response) {
+      alert(response.message);
+    }).always(function() {
+      $form[0].reset();
+      setTimeout(function() {
+        $result.hide();
+      }, 3000);
     });
-
-    // Clear form fields after submission
-    $('#InputName').val('');
-    $('#InputEmail1').val('');
-    $('#FormControlTextarea1').val('');
-
-    // Commented out redirection
-    // window.location.href = 'http://localhost:8000/';
   });
 
 });
