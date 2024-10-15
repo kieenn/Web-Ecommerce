@@ -4,7 +4,7 @@
 {% endblock %}
 {% block products %} active {% endblock %}
 {% block content %}
-
+{% load static %}
     <main class="container-products">
         <section class="filters">
             <h2 class="section-title">Filters</h2>
@@ -20,39 +20,27 @@
             </div>
             <div class="filter-group">
                 <label for="size-filter">Size:</label>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="size-s" value="S">
-                    <label for="size-s">S</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="size-m" value="M">
-                    <label for="size-m">M</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="size-l" value="L">
-                    <label for="size-l">L</label>
-                </div>
+                <select id="size-filter">
+                    <option value="">Select Size</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                </select>
             </div>
             <div class="filter-group">
                 <label for="color-filter">Color:</label>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="color-red" value="red">
-                    <label for="color-red" style="color: red;">Red</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="color-blue" value="blue">
-                    <label for="color-blue" style="color: blue;">Blue</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="color-green" value="green">
-                    <label for="color-green" style="color: green;">Green</label>
-                </div>
+                <select id="color-filter">
+                    <option value="">Select Color</option>
+                    <option value="red" style="color: red;">Red</option>
+                    <option value="blue" style="color: blue;">Blue</option>
+                    <option value="green" style="color: green;">Green</option>
+                </select>
             </div>
             <div class="filter-group">
-                <label for="min-price">Min Price:</label>
-                <input type="number" id="min-price" placeholder="Min Price">
-                <label for="max-price">Max Price:</label>
-                <input type="number" id="max-price" placeholder="Max Price">
+                <div class="price-slider">
+                    <input type="range" id="price-slider" min="0" max="100" value="0">
+                    <div id="price-display">Price: $<span id="price-value">0</span> - $100</div>
+                </div>
             </div>
         </section>
 
@@ -73,10 +61,11 @@
 
             <div class="product-grid" id="productGrid">
                 <div class="product">
-                    <img src="https://via.placeholder.com/250x200?text=Long+Sleeve+Tee" alt="Long Sleeve Tee">
+                    <img src="{% static 'images/103.webp' %}" alt="levent">
                     <div class="product-info">
                         <h3>Long Sleeve Tee</h3>
                         <p class="price">25 EGP</p>
+                        <button class="btn btn-primary">Add to Cart</button>
                     </div>
                 </div>
                 <div class="product">
@@ -84,6 +73,7 @@
                     <div class="product-info">
                         <h3>Polo</h3>
                         <p class="price">20 EGP</p>
+                        <button class="btn btn-primary">Add to Cart</button>
                     </div>
                 </div>
                 <div class="product">
@@ -91,6 +81,7 @@
                     <div class="product-info">
                         <h3>T-Shirt</h3>
                         <p class="price">18 EGP</p>
+                        <button class="btn btn-primary">Add to Cart</button>
                     </div>
                 </div>
                 <div class="product">
@@ -98,6 +89,7 @@
                     <div class="product-info">
                         <h3>T-Shirt with Logo</h3>
                         <p class="price">18 EGP</p>
+                        <button class="btn btn-primary">Add to Cart</button>
                     </div>
                 </div>
                 <div class="product">
@@ -105,6 +97,7 @@
                     <div class="product-info">
                         <h3>V-Neck T-Shirt</h3>
                         <p class="price">EGP</p>
+                        <button class="btn btn-primary">Add to Cart</button>
                     </div>
                 </div>
             </div>

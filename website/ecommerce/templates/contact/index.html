@@ -1,48 +1,76 @@
 {% extends '../base/base.html' %}
-{% block title %}
-Contact
-{% endblock %}
-{% block contact %} active {% endblock %}
+{% block title %}Contact{% endblock %}
+{% block contact %}active{% endblock %}
 
 {% block content %}
-<div class="container d-flex justify-content-center">
-			<div class="row my-2 mx-2">
-				<div class="col-md-6">
-			<img class="img" src="https://png.pngtree.com/png-vector/20190725/ourlarge/pngtree-message-icon-design-vector-png-image_1587713.jpg" alt="IMG">
-		</div><!--col-->
-			<div class="col-md-6">
-					<h2 class="form-title">Contact us</h2>
-						<p class="justify text-muted">Have an enquiry or would like to give us feedback?<br>Fill out the form below to contact our team.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="section-title">
+                <h2>Get In Touch</h2>
+                <p>Contact us for any queries or feedback.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row flex-row-reverse">
+        <div class="col-md-7 col-lg-8 m-15px-tb">
+            <div class="contact-form">
+                <form action="/" method="post" class="contactform contact_form" id="contact-form">
+					{% csrf_token %}
+                    <div class="returnmessage valid-feedback p-15px-b" data-success="Your message has been received, We will contact you soon."></div>
+                    <div class="empty_notice invalid-feedback p-15px-b"><span>Please Fill Required Fields</span></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input id="InputName" type="text" placeholder="Full Name" class="form-control" name="name"> 
+                            </div>
+							<div id="InputName-message"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input id="InputEmail1" type="text" placeholder="Email Address" class="form-control" name="email">  
+                            </div>
+							<div id="InputEmail-message"></div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input id="InputSubject" type="text" placeholder="Subject" class="form-control" name="subject"> 
+                            </div>
+							<div id="InputSubject-message"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <textarea id="FormControlTextarea1" placeholder="Message" class="form-control" rows="3" name="message"></textarea> 
+                            </div>
+							<div id="InputText-message"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="send">
+                               <button type="submit" class="px-btn theme"><span>Contact Us</span> <i class="arrow"></i></button>
+                            </div>
+                        </div>	
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-4 m-15px-tb">
+            <div class="contact-name">
+                <h5>Mail</h5>
+                <p>chanbedu2509@gmail.com</p>
+            </div>
+            <div class="contact-name">
+                <h5>Visit My Store</h5>
+                <p>Le Ngo Cat street, <br>Phu My city</p>
+            </div>
+            <div class="contact-name">
+                <h5>Phone</h5>
+                <p>+84 35588****</p>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<style>
 
-					<form class="contact-form" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="access_key" value="11932df6-93fa-4459-b7b1-516f39a66e22">
-						<div class="form-group pt-2 pl-1" >
-							<label for="exampleInputName">Your name</label>
-							<input type="text" class="form-control" id="InputName" name="name">
-                            <p id="InputName-message" style="color: red"></p>
-						</div>
-
-						<div class="form-group pl-1">
-							<label for="exampleInputEmail1">Your email address</label>
- 						 	<input type="email" class="form-control" id="InputEmail1" name="email">
-                            <p id="InputEmail-message" style="color: red"></p>
-						</div>
-
-						<div class="form-group pl-1">
-    						<label for="exampleFormControlTextarea1">Your message</label>
-    						<textarea class="form-control" id="FormControlTextarea1" rows="5" name="message"></textarea>
-                            <p id="InputText-message" style="color: red"></p>
-  						</div>
-  						<div class="row">
-  							<div class="col-md-3 offset-md-9"><button type="submit" class="btn btn-primary">Send</button></div>
-  						</div>
-
-
-  					</form>
-
-			</div><!--col-->
-		</div><!--row-->
-
-		</div>
+</style>
 {% endblock %}

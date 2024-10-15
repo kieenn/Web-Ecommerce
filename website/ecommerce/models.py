@@ -5,6 +5,8 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from dataclasses import dataclass
+
 from django.db import models
 
 
@@ -111,6 +113,35 @@ class PaymentMethods(models.Model):
         managed = False
         db_table = 'Payment_Methods'
 
+@dataclass
+class ProductInfo:
+    id: int
+    name: str
+    image: str
+    price: float
+
+@dataclass
+class ProductsDetails:
+    id: int
+    name: str
+    images: list  # Changed to plural to indicate multiple images
+    price: float
+    description: str
+    summary: str
+    category: str
+    subcategory: str
+    attributes: dict  # Changed to a dictionary to hold multiple attributes
+    quantity: int
+
+
+class ProductManager(models.Manager):
+    def get_product_info(self, product_id: int) -> ProductInfo:
+        """Retrieves product information for a given product ID."""
+        try:
+            product = self.get(pk=product_id)
+            return product.get_product_info()
+        except Products.DoesNotExist:
+            return None
 
 class ProductAttributes(models.Model):
     type = models.CharField(unique=True, max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
@@ -153,6 +184,44 @@ class Products(models.Model):
         managed = False
         db_table = 'Products'
 
+    objects = ProductManager()  # Use the custom manager
+
+    def get_product_info(self) -> ProductInfo:
+        """Returns a ProductInfo dataclass instance for this product."""
+        image = self.productimages_set.first()  # Assuming related_name is "productimages_set"
+        price_info = self.productsskus_set.first()  # Assuming related_name is "productsskus_set"
+
+        return ProductInfo(
+            id=self.id,
+            name=self.name,
+            image=image.image if image else None,
+            price=price_info.price if price_info else 0,
+        )
+    def get_product_detail(self) -> ProductsDetails:
+        images = self.productimages_set.all()
+        price = self.productsskus_set.first()
+        sub_category = self.sub_category  # ForeignKey relationship
+        category = sub_category.parent if sub_category else None  # Get parent category if exists
+        quantity = price.quantity if price else None  # Get quantity from price info
+        attributes = {}
+        for sku in self.productsskus_set.all():
+            for attr_value in sku.productattributesvalues_set.all():
+                attr_type = attr_value.product_attribute.type
+                if attr_type not in attributes:
+                    attributes[attr_type] = []
+                attributes[attr_type].append(attr_value.value)
+        return ProductsDetails(
+            id=self.id,
+            name=self.name,
+            description=self.description,
+            summary=self.summary,
+            images=[image.image for image in images],
+            price=price.price if price else None,
+            subcategory=sub_category.name if sub_category else None,
+            attributes= attributes,
+            category=category.name if category else None,
+            quantity=quantity
+        )
 
 class ProductsSkus(models.Model):
     product = models.ForeignKey(Products, models.DO_NOTHING, blank=True, null=True)
@@ -306,3 +375,5 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
+
+

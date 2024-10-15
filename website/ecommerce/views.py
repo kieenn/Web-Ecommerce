@@ -77,3 +77,36 @@ def loginhandle(request):
        print(e)
 
 
+@api_view(['GET'])
+def getProductsInfo(request):
+    """API endpoint to retrieve a list of product information."""
+    try:
+        # If you want to get ALL products:
+        all_products = Products.objects.all()
+
+        # Or, if you want to filter products (e.g., by category):
+        # category_id = request.query_params.get('category', None)
+        # all_products = Products.objects.filter(category=category_id) if category_id else Products.objects.all()
+
+        product_info_list = [
+            product.get_product_info() for product in all_products
+        ]
+
+        serializer = ProductInfoSerializer(product_info_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        # Handle any potential exceptions here (e.g., database errors)
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def getProductDetail(request,id):
+    try:
+        product = Products.objects.get(id=id)
+        product_detail = product.get_product_detail()
+        serializer = ProductDetailSerializer(product_detail, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
