@@ -45,8 +45,7 @@ def register(request):
 def cart(request):
     return render(request, 'cart/index.html')
 
-def detail(request):
-    return render(request, 'product/detail.html')
+
 def checkout(request):
     return render(request, 'order/checkout.html')
 
@@ -62,6 +61,7 @@ def loginhandle(request):
             if user:
 
                 request.session['id'] = user.first().id
+
                 return Response({
                     "id": user.first().id,
                     "status": True,
@@ -98,6 +98,9 @@ def getProductsInfo(request):
     except Exception as e:
         # Handle any potential exceptions here (e.g., database errors)
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def detail(request, product_name):
+    return render(request, 'product/detail.html')
 
 @api_view(['GET'])
 def getProductDetail(request,id):

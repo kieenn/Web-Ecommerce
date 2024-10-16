@@ -71,8 +71,8 @@ header {
 }
 
 .hero-image img {
-  width: auto;
-  height: auto;
+  width: 100%; /* Changed to ensure proper fit */
+  height: auto; /* Changed to ensure proper fit */
   object-fit: cover;
 }
 
@@ -92,19 +92,20 @@ header {
   padding: 20px;
   text-align: center;
   border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0.1, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   position: relative;
 }
 
 .product:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
 }
 
 .product img {
   width: 100%;
-  height: 300px;
+  height: auto; /* Changed to ensure proper fit */
+  max-height: 300px; /* Added to maintain aspect ratio */
   border-radius: 8px;
   object-fit: contain;
 }
@@ -147,7 +148,8 @@ header {
 
 .category img {
   width: 100%;
-  height: 200px;
+  height: auto; /* Changed to ensure proper fit */
+  max-height: 200px; /* Added to maintain aspect ratio */
   object-fit: cover;
 }
 
@@ -180,7 +182,8 @@ footer {
 
 .product-image img {
   width: 100%;
-  height: 400px;
+  height: auto; /* Changed to ensure proper fit */
+  max-height: 400px; /* Added to maintain aspect ratio */
   object-fit: cover;
 }
 
@@ -268,15 +271,6 @@ footer {
 .filter-group label {
   display: block;
   margin-bottom: 5px;
-}
-
-.filter-group select,
-.filter-group input[type="number"] {
-  padding: 8px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
 }
 
 .checkbox-group {
@@ -382,20 +376,6 @@ footer {
   }
 }
 
-.rowlanguage {
-  width: 74%;
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4xl);
-}
-
-@media only screen and (max-width: 1050px) {
-  .rowlanguage {
-    flex-direction: column;
-    width: 100%;
-  }
-}
-
 .rowoffer {
   gap: var(--space-md);
   display: flex;
@@ -410,25 +390,6 @@ footer {
 .shopnow {
   color: var(--gray_50) !important;
   text-decoration: underline;
-}
-
-.language {
-  color: var(--gray_50);
-  font-size: 14px;
-  gap: var(--space-sm);
-  display: flex;
-  width: 8%;
-  background-image: url(../public/images/img_dropdown.svg);
-  background-repeat: no-repeat;
-  background-size: 24px;
-  background-position: calc(100% - 12px);
-  padding: var(--space-lg);
-}
-
-@media only screen and (max-width: 1050px) {
-  .language {
-    width: 100%;
-  }
 }
 
 .columnlinethree {

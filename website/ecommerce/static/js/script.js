@@ -1,9 +1,28 @@
+//jquery
 $(document).ready(function () {
   const $loginForm = $(".login-form");
   const $message = $(".message");
   const $phone = $("#phone");
   const $password = $("#password");
+  const loginStatus = localStorage.getItem('login');
+  if (loginStatus) {
+    $('#accountDropdownContainer').show();
+    $('#loginItem').hide();
+  } else {
+    $('#accountDropdownContainer').hide();
+    $('#loginItem').show();
+  }
 
+  function getCookie(name) {
+    let cookieArr = document.cookie.split(";");
+    for (let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+      if (name === cookiePair[0].trim()) {
+        return decodeURIComponent(cookiePair[1]);
+      }
+    }
+    return null;
+  }
   /**
    * Validates a Vietnamese phone number.
    * @param {string} phoneNumber - The phone number to validate.
@@ -39,7 +58,7 @@ $(document).ready(function () {
 
     // Send login request
     $.ajax({
-      url: "http://localhost:8000/loginhandle/",
+      url: "/loginhandle/",
       method: "POST",
       data: { phone_number: phoneNumber, password: password },
       dataType: "json",
@@ -47,8 +66,10 @@ $(document).ready(function () {
     })
       .done(function (response) {
         if (response.status) {
-          sessionStorage.setItem("client", response.id);
-          window.location.href = "http://localhost:8000/";
+          localStorage.setItem("login", "true")
+          localStorage.setItem("client", response.id)
+           // Use sessionStorage instead of localStorage
+          window.location.href = "/";
         } else {
           alert(response.message);
         }
@@ -60,11 +81,13 @@ $(document).ready(function () {
 
   // Handle logout
   $("#logout-button").click(function () {
-    sessionStorage.clear();
+    localStorage.removeItem("client");
+    localStorage.removeItem("login");
+    sessionStorage.clear()
     // Optionally redirect to login page or home page
     // window.location.href = 'http://localhost:8000/login/';
   });
-
+  
   /**
    * Validates an email address.
    * @param {string} email - The email address to validate.
@@ -174,7 +197,7 @@ $(document).ready(function () {
   });
   // get products information in homepage and shop
   $.ajax({
-    url: "http://localhost:8000/products/get",
+    url: "/products/get",
     method: "GET",
     dataType: "json",
   })
@@ -193,22 +216,20 @@ $(document).ready(function () {
       for (let i = 0; i < productCount; i++) {
         const product = products[i];
         const productHtml = `
-      <div class="product">
-        <input type="hidden" class="product-id" value="${product.id}">
-        <img data-src="${product.image}" alt="${product.name}" class="lazy-load">
-        <div class="product-info">
-          <h3>${product.name}</h3>
-          <p class="price">${product.price} $</p>
-          <button class="btn btn-primary">Add to Cart</button>
-        </div>
-      </div>`;
+        
+          <div class="product">
+          
+            <input type="hidden" class="product-id" value="${product.id}">
+            <img data-src="${product.image}" alt="${product.name}" class="lazy-load">
+            <div class="product-info">
+              <h3>${product.name}</h3>
+              <p class="price">${product.price} $</p>
+              <button class="btn btn-primary">Add to Cart</button>
+            </div>
+
+          </div>`;
         $productGrid.append(productHtml);
       }
-      $productGrid.on("click", ".product", function() {
-        productId = $(this).find(".product-id").val();
-        console.log(productId)
-        // You can add additional logic here, such as adding the product to the cart
-      });
       // Lazy loading images
       const lazyLoadImages = document.querySelectorAll(".lazy-load");
       const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -229,25 +250,55 @@ $(document).ready(function () {
     .fail(function (jqXHR, textStatus, errorThrown) {
       alert("Failed to retrieve products: " + errorThrown);
     });
-    //description - summay in product detail
-    $('.btn').click(function() {
-      $('.tab-pane').removeClass('show active');
-      $('#' + $(this).data('tab')).addClass('show active');
-      $('.btn').css('background-color', ''); // Reset background color
-      $('.btn').css('border', 'none'); // Reset border
-      $(this).css('background-color', '#0d6efd'); // Set active background color
-      $(this).css('border', 'none'); // Set active border
-    });
 
-    //quantity product add to cart
-    $('#button-addon1').on('click', function() {
-      var quantity = parseInt($('#quantity-input').val());
-      if (quantity > 1) {
-        $('#quantity-input').val(quantity - 1);
-      }
+  //quantity product add to cart
+  $("#button-addon1").on("click", function () {
+    var quantity = parseInt($("#quantity-input").val());
+    if (quantity > 1) {
+      $("#quantity-input").val(quantity - 1);
+    }
+  });
+  $("#button-addon2").on("click", function () {
+    var quantity = parseInt($("#quantity-input").val());
+    $("#quantity-input").val(quantity + 1);
+  });
+  const isHomePage = $("#productGrid-home").length > 0; // Check if on home page
+  const $productGrid = isHomePage ? $("#productGrid-home") : $("#productGrid");
+  $productGrid.on("click", ".product", function (e) {
+    e.preventDefault(); // Prevent default anchor click behavior
+    const productId = $(this).find(".product-id").val();
+
+    // Fetch product details using AJAX
+    $.ajax({
+      url: `/products/detail/get/${productId}/`,
+      method: "GET",
+      success: function (data) {
+        // Store the product details in session storage to handle multiple tabs
+        sessionStorage.setItem("productDetail", JSON.stringify(data));
+        // Redirect to the product detail page
+        window.location.href = `/products/detail/${data.name}/`;
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert("Failed to retrieve product details: " + errorThrown);
+      },
     });
-    $('#button-addon2').on('click', function() {
-      var quantity = parseInt($('#quantity-input').val());
-      $('#quantity-input').val(quantity + 1);
-    });
+  });
+  // image change in detail site
+  $(".item-thumb").on("click", function (e) {
+    e.preventDefault();
+    var newSrc = $(this).data("image");
+    $("#main-image").attr("src", newSrc);
+  });
+  //show data in detail site
+
 });
+
+//js 
+function activateTab(tabName) {
+  $('.tab-pane').removeClass('show active');
+  $('#' + tabName).addClass('show active');
+  $('.btn').css('background-color', ''); // Reset background color
+  $('.btn').css('border', 'none'); // Reset border
+  $('#ex1-tab-' + (tabName === 'description' ? '1' : '2')).css('background-color', '#0d6efd'); // Set active background color
+  $('#ex1-tab-' + (tabName === 'description' ? '1' : '2')).css('border', 'none');
+}
