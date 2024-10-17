@@ -38,10 +38,16 @@ class Cart(models.Model):
         managed = False
         db_table = 'Cart'
 
+@dataclass
+class CartItemInformation:
+    id: int
+    name: str
+    image: str
+    quantity: int
+    price: float
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, models.DO_NOTHING, blank=True, null=True)
-    product = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
     products_sku = models.ForeignKey('ProductsSkus', models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
@@ -51,6 +57,16 @@ class CartItem(models.Model):
         managed = False
         db_table = 'Cart_Item'
 
+    def get_cart_item_info(self) -> CartItemInformation:
+        product = self.products_sku.product  # Access the product through the products_sku relationship
+
+        return CartItemInformation(
+            id=self.id,
+            name=product.name if product else None,  # Ensure product exists before accessing name
+            image=product.productimages_set.first().image if product and product.productimages_set.exists() else None,  # Ensure product exists and has images
+            quantity=self.quantity,
+            price=float(self.products_sku.price * self.quantity) if self.products_sku else 0.0,  # Ensure products_sku exists before calculating price
+        )
 
 class Categories(models.Model):
     name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
@@ -134,14 +150,14 @@ class ProductsDetails:
     quantity: int
 
 
-class ProductManager(models.Manager):
-    def get_product_info(self, product_id: int) -> ProductInfo:
-        """Retrieves product information for a given product ID."""
-        try:
-            product = self.get(pk=product_id)
-            return product.get_product_info()
-        except Products.DoesNotExist:
-            return None
+# class ProductManager(models.Manager):
+#     def get_product_info(self, product_id: int) -> ProductInfo:
+#         """Retrieves product information for a given product ID."""
+#         try:
+#             product = self.get(pk=product_id)
+#             return product.get_product_info()
+#         except Products.DoesNotExist:
+#             return None
 
 class ProductAttributes(models.Model):
     type = models.CharField(unique=True, max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
@@ -184,7 +200,7 @@ class Products(models.Model):
         managed = False
         db_table = 'Products'
 
-    objects = ProductManager()  # Use the custom manager
+    # objects = ProductManager()  # Use the custom manager
 
     def get_product_info(self) -> ProductInfo:
         """Returns a ProductInfo dataclass instance for this product."""

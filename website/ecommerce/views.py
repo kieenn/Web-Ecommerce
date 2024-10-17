@@ -112,4 +112,24 @@ def getProductDetail(request,id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def getCart(request, id):
+    try:
+        cart_client = Cart.objects.filter(user_id=id).first()
+        if not cart_client:
+            return Response({'error': 'Cart not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        cart_id = cart_client.id
+        all_items = CartItem.objects.filter(cart_id=cart_id)
+        
+        if not all_items.exists():
+            return Response({'error': 'No items in cart'}, status=status.HTTP_404_NOT_FOUND)
+        
+        Cart_Items_info_list = [
+            item.get_cart_item_info() for item in all_items
+        ]
+        serializer = CartItemSerializer(Cart_Items_info_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

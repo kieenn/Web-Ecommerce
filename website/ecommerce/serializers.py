@@ -30,3 +30,9 @@ class ProductDetailSerializer(serializers.Serializer):
     subcategory = serializers.CharField()
     category = serializers.CharField()
 
+class CartItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    image = serializers.CharField(allow_null=True)
+    quantity = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)

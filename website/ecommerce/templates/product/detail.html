@@ -34,6 +34,7 @@
               <div class="row-mb-3">
                 <label class="md-2">Color</label>
                 <select class="form-select border border-secondary" style="height: 35px" id="product-color">
+                    <option value="">chosse color</option>
                   <!-- Color options will be populated here by jQuery -->
                 </select>
               </div>
@@ -41,6 +42,7 @@
               <div class="row-mb-3">
                 <label class="md-2">Size</label>
                 <select class="form-select border border-secondary" style="height: 35px" id="product-size">
+                  <option value="">chosse size</option>
                   <!-- Size options will be populated here by jQuery -->
                 </select>
               </div>
@@ -141,46 +143,12 @@
 
             </div>
 
-            <div class="product-grid" id="productGrid">
+            <div class="product-grid" id="productGrid-home">
                
             </div>
         </section>
 </div>
-<script>
-  $(document).ready(function() {
-    const productData = JSON.parse(sessionStorage.getItem("productDetail"));
-    // alert(productData.attributes.Size[1])
-    if (productData) {
-      $('#main-image').attr('src', productData.images[0]); // Changed index to 0
-      $('#product-name').text(productData.name);
-      $('#product-description').text(productData.description);
-      $('#product-summary').text(productData.summary);
-      $('#product-price').text(productData.price + '$');
-      $('#product-orders').html(`</i>${productData.quantity} orders`);
-      $('#product-stock-status').text(productData.quantity > 0 ? 'In stock' : 'Out of stock');
 
-      // Use forEach for color options
-      productData.attributes.Color.forEach(color => {
-        $('#product-color').append(`<option>${color}</option>`);
-      });
-
-      // Use forEach for size options
-      productData.attributes.Size.forEach(size => {
-        $('#product-size').append(`<option>${size}</option>`);
-      });
-
-      // Use forEach for images
-      productData.images.forEach(image => {
-        $('#image-thumbnails').append(`
-          <a class="border mx-1 rounded-2 item-thumb" href="#" data-image="${image}">
-            <img width="60" height="60" class="rounded-2" src="${image}" />
-          </a>
-        `);
-      });
-
-    }
-  });
-</script>
 <style>
   .icon-hover:hover {
     border-color: #3b71ca !important;

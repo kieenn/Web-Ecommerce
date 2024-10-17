@@ -58,7 +58,7 @@ $(document).ready(function () {
 
     // Send login request
     $.ajax({
-      url: "/loginhandle/",
+      url: "/login/post",
       method: "POST",
       data: { phone_number: phoneNumber, password: password },
       dataType: "json",
@@ -87,7 +87,7 @@ $(document).ready(function () {
     // Optionally redirect to login page or home page
     // window.location.href = 'http://localhost:8000/login/';
   });
-  
+
   /**
    * Validates an email address.
    * @param {string} email - The email address to validate.
@@ -220,10 +220,10 @@ $(document).ready(function () {
           <div class="product">
           
             <input type="hidden" class="product-id" value="${product.id}">
-            <img data-src="${product.image}" alt="${product.name}" class="lazy-load">
+            <img data-src="${product.image}" alt="${product.name}" class="lazy-load" >
             <div class="product-info">
               <h3>${product.name}</h3>
-              <p class="price">${product.price} $</p>
+              <p class="price">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
               <button class="btn btn-primary">Add to Cart</button>
             </div>
 
@@ -290,10 +290,41 @@ $(document).ready(function () {
     $("#main-image").attr("src", newSrc);
   });
   //show data in detail site
+const productData = JSON.parse(sessionStorage.getItem("productDetail"));
+    // alert(productData.attributes.Size[1])
+    if (productData) {
+      $('#main-image').attr('src', productData.images[0]); // Changed index to 0
+      $('#product-name').text(productData.name);
+      $('#product-description').text(productData.description);
+      $('#product-summary').text(productData.summary);
+      $('#product-price').text(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(productData.price));
+      $('#product-orders').html(`</i>${productData.quantity} orders`);
+      $('#product-stock-status').text(productData.quantity > 0 ? 'In stock' : 'Out of stock');
+
+      // Use forEach for color options
+      const uniqueColors = [...new Set(productData.attributes.Color)];
+      uniqueColors.forEach(color => {
+        $('#product-color').append(`<option>${color}</option>`);
+      });
+
+      const uniqueSizes = [...new Set(productData.attributes.Size)];
+      uniqueSizes.forEach(size => {
+        $('#product-size').append(`<option>${size}</option>`);
+      });
+
+      // Use forEach for images
+      productData.images.forEach(image => {
+        $('#image-thumbnails').append(`
+          <a class="border mx-1 rounded-2 item-thumb" href="#" data-image="${image}">
+            <img width="60" height="60" class="rounded-2" src="${image}" style="object-fit: cover" />
+          </a>
+        `);
+      });
+    }
 
 });
 
-//js 
+//js
 function activateTab(tabName) {
   $('.tab-pane').removeClass('show active');
   $('#' + tabName).addClass('show active');
