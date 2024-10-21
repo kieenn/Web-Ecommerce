@@ -78,7 +78,7 @@
               <li class="nav-item {% block cart %} {% endblock %}"></li>
                 <a class="nav-link cart-link" href="/cart/">
                   <i class="fa fa-shopping-cart" style="font-size: 24px"></i>
-                  <span class="badge bg-warning text-dark">3</span></a
+                  <span class="badge bg-warning text-dark"></span></a
                 >
               <li class="nav-item {% block about %} {% endblock %}">
                 <a class="nav-link" href="/about">About</a>
@@ -86,8 +86,8 @@
               <li class="nav-item {% block contact %} {% endblock %}">
                 <a class="nav-link" href="/contact">Contact</a>
               </li>
-              
-              <li class="nav-item dropdown {% block account %} {% endblock %}" id="accountDropdownContainer" style="display: none;">
+              {% if request.session.session_key %}
+              <li class="nav-item dropdown {% block account %} {% endblock %}" id="accountDropdownContainer">
                 <a
                   class="nav-link dropdown-toggle"
                   href="#"
@@ -108,7 +108,7 @@
                     box-shadow: 0 2px 4px rgba(0, 0, 0.1, 0.1);
                   "
                 >
-                  <a class="dropdown-item" href="#">Profile</a>
+                  <a class="dropdown-item" href="/profile/">Profile</a>
                   <a class="dropdown-item" href="#">Orders</a>
                   <hr class="dropdown-divider" />
                   <a
@@ -118,22 +118,12 @@
                     >Logout</a
                   >
                 </div>
+              {% else %}
               </li>
               <li class="nav-item {% block login %} {% endblock %}" id="loginItem">
                 <a class="nav-link" href="/login/">Login</a>
               </li>
-              <script>
-                $(document).ready(function() {
-                  const clientId = localStorage.getItem('client');
-                  if (clientId) {
-                    $('#accountDropdownContainer').show();
-                    $('#loginItem').hide();
-                  } else {
-                    $('#accountDropdownContainer').hide();
-                    $('#loginItem').show();
-                  }
-                });
-              </script>
+            {% endif %}
             </ul>
           </div>
         </nav>

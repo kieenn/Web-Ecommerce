@@ -21,7 +21,7 @@ class Account(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-def account(request):
+def profile(request):
     return render(request, 'account/profile.html')
 def logout_view(request):
     logout(request)
@@ -133,3 +133,13 @@ def getCart(request, id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['DELETE'])
+def deleteCartItem(request, id):
+    try:
+        cartItem = CartItem.objects.filter(id=id).first()
+        if not cartItem:
+            return Response({'error': 'Cart item not found'}, status=status.HTTP_404_NOT_FOUND)
+        cartItem.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

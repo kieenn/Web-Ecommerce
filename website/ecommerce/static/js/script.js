@@ -5,24 +5,7 @@ $(document).ready(function () {
   const $phone = $("#phone");
   const $password = $("#password");
   const loginStatus = localStorage.getItem('login');
-  if (loginStatus) {
-    $('#accountDropdownContainer').show();
-    $('#loginItem').hide();
-  } else {
-    $('#accountDropdownContainer').hide();
-    $('#loginItem').show();
-  }
 
-  function getCookie(name) {
-    let cookieArr = document.cookie.split(";");
-    for (let i = 0; i < cookieArr.length; i++) {
-      let cookiePair = cookieArr[i].split("=");
-      if (name === cookiePair[0].trim()) {
-        return decodeURIComponent(cookiePair[1]);
-      }
-    }
-    return null;
-  }
   /**
    * Validates a Vietnamese phone number.
    * @param {string} phoneNumber - The phone number to validate.
@@ -320,6 +303,58 @@ const productData = JSON.parse(sessionStorage.getItem("productDetail"));
           </a>
         `);
       });
+    }
+
+    // call api cart item then fetch data in cart site
+    const cart_item = $("#cart-item")
+ if (cart_item.length > 0) {
+  // Attach the click handler to the cart-item element (or a closer ancestor)
+  cart_item.on('click', '.delete-button', function() {
+         // Get the parent row of the clicked delete button
+    const $row = $(this).closest('tr'); // Assumes the delete button is directly in the row
+
+    // Find the hidden input within the row and get its value
+    const itemId = $row.find('input[type=hidden]').val();
+    $.ajax({
+      url: `/cart/delete/${itemId}`,
+      method:"DELETE"
+    }).done(function (response){
+      alert('done')
+    }).fail(function(re){
+      alert('cart/delete/'+itemId)
+    })
+  });
+  // check if client exist else get products in local store
+
+      $.ajax({
+        url: `/cart/get/${localStorage.getItem('client')}`,
+        method: "GET",
+        dataType: "json"
+      }, 500).done(function(items){
+        items.forEach(item =>{
+          cart_item.append(`
+                <tr>
+                  <th scope="row" class="delete-button align-middle" style="cursor: pointer">
+                    <div>
+                        <input type="hidden" value="${item.id}">
+                        <i style="font-size:20px; color: red" class="fa">&#xf014;</i>
+                    </div>
+                  </th>
+                  <td>
+                      <div style="display: flex; align-items: center;"> 
+                        <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
+                        <p class="m-0" style=" margin: 0;">${item.name}</p> 
+                    </div>
+                  </td>
+                  <td><input type="number" min="1" value="${item.quantity}" class="rounded-3 " style="width: auto; max-width: 50px"></td>
+                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
+                </tr>   
+            `)
+        })
+
+      }).fail(function () {
+        alert('error')
+      })
     }
 
 });

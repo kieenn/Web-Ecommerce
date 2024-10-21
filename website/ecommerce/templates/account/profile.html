@@ -6,4 +6,180 @@ Account
 
 {% block content %}
 
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4">Account settings</h4>
+  <div class="card rounded-4">
+    <div class="row g-0">
+      <div class="col-md-3">
+        <div class="list-group list-group-flush account-settings-links">
+          <a
+            class="list-group-item list-group-item-action active"
+            data-bs-toggle="list"
+            href="#account-general"
+            >General</a
+          >
+          <a
+            class="list-group-item list-group-item-action"
+            data-bs-toggle="list"
+            href="#account-change-password"
+            >Change password</a
+          >
+          <a
+            class="list-group-item list-group-item-action"
+            data-bs-toggle="list"
+            href="#account-info"
+            >Info</a
+          >
+          <a
+            class="list-group-item list-group-item-action"
+            data-bs-toggle="list"
+            href="#account-social-links"
+            >Address</a
+          >
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="account-general">
+            <hr class="m-0" />
+            <div class="card-body">
+                <div class="form-group">
+                <label for="name" class="form-label">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="first_name"
+                  value="Nelle Maxwell"
+                />
+                     <label for="name" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="last_name"
+                  value="Nelle Maxwell"
+                />
+              </div>
+              <div class="form-group">
+                <label for="email" class="form-label">E-mail</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="email"
+                  value="nmaxwell@mail.com"
+                />
+                <div class="alert alert-warning mt-3">
+                  Your email is not confirmed. Please check your
+                  inbox.<br />
+                  <a href="#">Resend confirmation</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="account-change-password">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="currentPassword" class="form-label"
+                  >Current password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="currentPassword"
+                />
+              </div>
+              <div class="form-group">
+                <label for="newPassword" class="form-label"
+                  >New password</label
+                >
+                <input type="password" class="form-control" id="newPassword" />
+              </div>
+              <div class="form-group">
+                <label for="repeatNewPassword" class="form-label"
+                  >Repeat new password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="repeatNewPassword"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="account-info">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="birthday" class="form-label">Birthday</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="birthday"
+                  value="May 3, 1995"
+                />
+              </div>
+            </div>
+            <hr class="m-0" />
+            <div class="card-body">
+              <h6 class="mb-4">Contacts</h6>
+              <div class="form-group">
+                <label for="phone" class="form-label">Phone</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="phone"
+                  value="035588****"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="account-social-links">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="twitter" class="form-label">Twitter</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="twitter"
+                  value="https://twitter.com/user"
+                />
+              </div>
+              <div class="form-group">
+                <label for="facebook" class="form-label">Facebook</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="facebook"
+                  value="https://www.facebook.com/user"
+                />
+              </div>
+              <div class="form-group">
+                <label for="googlePlus" class="form-label">Google+</label>
+                <input type="text" class="form-control" id="googlePlus" />
+              </div>
+              <div class="form-group">
+                <label for="linkedIn" class="form-label">LinkedIn</label>
+                <input type="text" class="form-control" id="linkedIn" />
+              </div>
+              <div class="form-group">
+                <label for="instagram" class="form-label">Instagram</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="instagram"
+                  value="https://www.instagram.com/user"
+                />
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="text-end mt-3" style="margin-bottom: 20px">
+    <button type="button" class="btn btn-primary me-2" >
+      Save changes
+    </button>
+    <button type="button" class="btn btn-secondary">Cancel</button>
+  </div>
+  </div>
+
 {% endblock %}
