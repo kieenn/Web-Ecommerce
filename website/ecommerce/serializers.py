@@ -36,3 +36,5 @@ class CartItemSerializer(serializers.Serializer):
     image = serializers.CharField(allow_null=True)
     quantity = serializers.IntegerField()
     price = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
+    size = serializers.CharField()
+    color = serializers.CharField()

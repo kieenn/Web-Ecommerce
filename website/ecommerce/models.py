@@ -46,6 +46,8 @@ class CartItemInformation:
     image: str
     quantity: int
     price: float
+    size: str
+    color: str
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, models.DO_NOTHING, blank=True, null=True)
@@ -59,14 +61,28 @@ class CartItem(models.Model):
         db_table = 'Cart_Item'
 
     def get_cart_item_info(self) -> CartItemInformation:
-        product = self.products_sku.product  # Access the product through the products_sku relationship
+        product = self.products_sku.product if self.products_sku else None
+        size = None
+        color = None
 
+        if self.products_sku:
+            try:
+                attribute_values = ProductAttributesValues.objects.filter(products_sku=self.products_sku)
+                for attr_value in attribute_values:
+                    if attr_value.product_attribute.type == 'Size':
+                        size = attr_value.value
+                    elif attr_value.product_attribute.type == 'Color':
+                        color = attr_value.value
+            except ProductAttributesValues.DoesNotExist:
+                pass
         return CartItemInformation(
             id=self.id,
             name=product.name if product else None,  # Ensure product exists before accessing name
             image=product.productimages_set.first().image if product and product.productimages_set.exists() else None,  # Ensure product exists and has images
             quantity=self.quantity,
             price=float(self.products_sku.price * self.quantity) if self.products_sku else 0.0,  # Ensure products_sku exists before calculating price
+            size=size,
+            color=color,
         )
 
 class Categories(models.Model):

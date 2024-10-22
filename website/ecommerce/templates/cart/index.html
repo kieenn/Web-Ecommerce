@@ -9,9 +9,11 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col">Product</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Price</th>
+              <th scope="col" >Product</th>
+              <th scope="col" class="text-center">Size</th>
+              <th scope="col" class="text-center">Color</th>
+              <th scope="col" class="text-center">Quantity</th>
+              <th scope="col" class="text-center">Price</th>
             </tr>
           </thead>
           <tbody id="cart-item">
@@ -31,16 +33,12 @@
             <h5 class="card-title">Cart Summary</h5>
             <ul class="list-group list-group-flush" id="cart-summary">
               <li class="list-group-item d-flex justify-content-between align-items-center">
-                Subtotal
-                <span class="badge bg-secondary rounded-pill" id="subtotal">$0</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                Shipping
-                <span class="badge bg-secondary rounded-pill">Free</span>
+                Total Product
+                <span class="badge bg-secondary rounded-pill" id="totalProduct"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 Total
-                <span class="badge bg-success rounded-pill" id="total">$0</span>
+                <span class="badge bg-success rounded-pill" id="totalPrice"></span>
               </li>
             </ul>
             <a class="btn btn-success w-100 mt-3" href="/checkout/">

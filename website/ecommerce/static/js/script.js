@@ -251,7 +251,8 @@ $(document).ready(function () {
   // loading cart item
   function loadCartItems() {
     $cartItemTable.empty(); // Clear before reloading
-
+    let totalPrice = 0; // Initialize totalPrice to 0
+    let totalProductQuantity = 0; // Initialize totalQuantity to 0
     // show client's cart ( login )
     if (localStorage.getItem('client')) {
       $.ajax({
@@ -261,6 +262,8 @@ $(document).ready(function () {
       })
         .done(function (items) {
           items.forEach((item) => {
+            totalPrice += parseFloat(item.price); // Calculate price
+            totalProductQuantity += item.quantity;
             $cartItemTable.append(`
               <tr>
                 <th scope="row" class="delete-button align-middle" style="cursor: pointer">
@@ -269,18 +272,22 @@ $(document).ready(function () {
                     <i style="font-size:20px; color: red" class="fa"></i> 
                   </div>
                 </th>
-                <td>
+                <td class = "align-middle">
                   <div style="display: flex; align-items: center;"> 
                     <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
                     <p class="m-0">${item.name}</p> 
                   </div>
                 </td>
-                <td><input type="number" min="1" value="${item.quantity}" class="rounded-3" style="width: auto; max-width: 50px"></td>
-                <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
+                <td class = "align-middle text-center">${item.size}</td>
+                <td class = "align-middle text-center">${item.color}</td>
+                <td class = "align-middle text-center"><input type="number" min="1" value="${item.quantity}" class="border-0 text-center" style="width: auto; max-width: 50px"></td>
+                <td class = "align-middle text-center">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
               </tr>   
             `);
           });
           attachDeleteHandlers();
+           $("#totalProduct").append(totalProductQuantity)
+          $("#totalPrice").append(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice))
         })
         .fail(function () {
           alert('Error loading cart items.');
