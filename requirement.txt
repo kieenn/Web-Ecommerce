@@ -1,3 +1,0 @@
-django
-rest_framework
-django mssql-django

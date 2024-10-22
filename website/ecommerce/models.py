@@ -250,7 +250,7 @@ class ProductsSkus(models.Model):
         managed = False
         db_table = 'Products_SKUs'
 
-    def get_sku(self,product_id, color, size):
+    def get_sku(product_id, color, size):
         try:
             product = get_object_or_404(Products, pk=product_id)
             color_attribute_id = ProductAttributes.objects.get(type='Color').id

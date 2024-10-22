@@ -165,7 +165,7 @@ def addToCart(request, id):
             return HttpResponse(selected_sku, status=status.HTTP_200_OK)
         else:
             # Handle the case where get_sku returns None (SKU not found)
-            return HttpResponse("SKU not found", status=status.HTTP_404_NOT_FOUND)
+            return HttpResponse("SKU not found",selected_sku, color,size, status=status.HTTP_404_NOT_FOUND)
 
     except (Products.DoesNotExist, ProductsSkus.DoesNotExist, ProductAttributes.DoesNotExist) as e:
         print(f"Error retrieving product or SKU: {e}")
