@@ -8,6 +8,7 @@
 from dataclasses import dataclass
 
 from django.db import models
+from django.shortcuts import get_object_or_404
 
 
 class Addresses(models.Model):
@@ -248,6 +249,31 @@ class ProductsSkus(models.Model):
     class Meta:
         managed = False
         db_table = 'Products_SKUs'
+
+    def get_sku(self,product_id, color, size):
+        try:
+            product = get_object_or_404(Products, pk=product_id)
+            color_attribute_id = ProductAttributes.objects.get(type='Color').id
+            size_attribute_id = ProductAttributes.objects.get(type='Size').id
+
+            selected_sku = ProductsSkus.objects.filter(
+                product=product
+            ).filter(
+                productattributesvalues__product_attribute_id=color_attribute_id,
+                productattributesvalues__value=color
+            ).filter(
+                productattributesvalues__product_attribute_id=size_attribute_id,
+                productattributesvalues__value=size
+            ).first()
+
+            if selected_sku:
+                return selected_sku
+            else:
+                return None
+
+        except (Products.DoesNotExist, ProductsSkus.DoesNotExist, ProductAttributes.DoesNotExist) as e:
+            print(f"Error retrieving SKU: {e}")
+            return None
 
 
 class SubCategories(models.Model):

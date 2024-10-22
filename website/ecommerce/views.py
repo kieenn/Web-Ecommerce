@@ -1,11 +1,13 @@
 from django.contrib.auth import logout
 from django.http import  HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from pyexpat.errors import messages
 from rest_framework.response import Response
 from rest_framework.decorators import  api_view
 from rest_framework.views import APIView
 from rest_framework import status
+from select import select
+
 from .serializers import *
 
 
@@ -143,3 +145,29 @@ def deleteCartItem(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def addToCart(request, id):
+    cart_client = Cart.objects.filter(user_id=id).first()
+    data = request.data
+    productId = data['product_id']
+    color = data['color']
+    size = data['size']
+    quantity = data['quantity']
+
+    try:
+        # Call get_sku directly (it's a function, not a class method)
+        selected_sku = ProductsSkus.get_sku(productId, color, size)
+
+        if selected_sku:
+            cartItem = CartItem(cart=cart_client, products_sku=selected_sku, quantity=quantity)
+            cartItem.save()
+            return HttpResponse(selected_sku, status=status.HTTP_200_OK)
+        else:
+            # Handle the case where get_sku returns None (SKU not found)
+            return HttpResponse("SKU not found", status=status.HTTP_404_NOT_FOUND)
+
+    except (Products.DoesNotExist, ProductsSkus.DoesNotExist, ProductAttributes.DoesNotExist) as e:
+        print(f"Error retrieving product or SKU: {e}")
+        return HttpResponse(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

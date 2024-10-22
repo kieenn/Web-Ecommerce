@@ -4,8 +4,6 @@ $(document).ready(function () {
   const $message = $(".message");
   const $phone = $("#phone");
   const $password = $("#password");
-  const loginStatus = localStorage.getItem('login');
-
   /**
    * Validates a Vietnamese phone number.
    * @param {string} phoneNumber - The phone number to validate.
@@ -185,7 +183,7 @@ $(document).ready(function () {
     dataType: "json",
   })
     .done(function (response) {
-      products = response;
+      let products = response;
       const isHomePage = $("#productGrid-home").length > 0; // Check if on home page
       const $productGrid = isHomePage
         ? $("#productGrid-home")
@@ -236,13 +234,13 @@ $(document).ready(function () {
 
   //quantity product add to cart
   $("#button-addon1").on("click", function () {
-    var quantity = parseInt($("#quantity-input").val());
+    const quantity = parseInt($("#quantity-input").val());
     if (quantity > 1) {
       $("#quantity-input").val(quantity - 1);
     }
   });
   $("#button-addon2").on("click", function () {
-    var quantity = parseInt($("#quantity-input").val());
+    const quantity = parseInt($("#quantity-input").val());
     $("#quantity-input").val(quantity + 1);
   });
   const isHomePage = $("#productGrid-home").length > 0; // Check if on home page
@@ -269,7 +267,7 @@ $(document).ready(function () {
   // image change in detail site
   $(".item-thumb").on("click", function (e) {
     e.preventDefault();
-    var newSrc = $(this).data("image");
+    const newSrc = $(this).data("image");
     $("#main-image").attr("src", newSrc);
   });
   //show data in detail site
@@ -287,12 +285,12 @@ const productData = JSON.parse(sessionStorage.getItem("productDetail"));
       // Use forEach for color options
       const uniqueColors = [...new Set(productData.attributes.Color)];
       uniqueColors.forEach(color => {
-        $('#product-color').append(`<option>${color}</option>`);
+        $('#product-color').append(`<option value="${color}">${color}</option>`);
       });
 
       const uniqueSizes = [...new Set(productData.attributes.Size)];
       uniqueSizes.forEach(size => {
-        $('#product-size').append(`<option>${size}</option>`);
+        $('#product-size').append(`<option value="${size}">${size}</option>`);
       });
 
       // Use forEach for images
@@ -306,57 +304,120 @@ const productData = JSON.parse(sessionStorage.getItem("productDetail"));
     }
 
     // call api cart item then fetch data in cart site
-    const cart_item = $("#cart-item")
- if (cart_item.length > 0) {
-  // Attach the click handler to the cart-item element (or a closer ancestor)
-  cart_item.on('click', '.delete-button', function() {
-         // Get the parent row of the clicked delete button
-    const $row = $(this).closest('tr'); // Assumes the delete button is directly in the row
 
-    // Find the hidden input within the row and get its value
-    const itemId = $row.find('input[type=hidden]').val();
-    $.ajax({
-      url: `/cart/delete/${itemId}`,
-      method:"DELETE"
-    }).done(function (response){
-      alert('done')
-    }).fail(function(re){
-      alert('cart/delete/'+itemId)
-    })
-  });
+  // Attach the click handler to the cart-item element (or a closer ancestor)
+  // cart_item.on('click', '.delete-button', function() {
+  //        // Get the parent row of the clicked delete button
+  //   const $row = $(this).closest('tr'); // Assumes the delete button is directly in the row
+  //
+  //   // Find the hidden input within the row and get its value
+  //   const itemId = $row.find('input[type=hidden]').val();
+  //   $.ajax({
+  //     url: `/cart/delete/${itemId}`,
+  //     method:"DELETE"
+  //   }).done(function (response){
+  //     alert('done')
+  //   }).fail(function(re){
+  //     alert('cart/delete/'+itemId)
+  //   })
+  // });
   // check if client exist else get products in local store
 
-      $.ajax({
+ function loadCartItems() {
+    const cart_item = $("#cart-item");
+    if (cart_item.length > 0) {
+    // Clear existing cart items before reloading
+       cart_item.empty();
+      if(localStorage.getItem('client')){
+        $.ajax({
         url: `/cart/get/${localStorage.getItem('client')}`,
         method: "GET",
-        dataType: "json"
-      }, 500).done(function(items){
-        items.forEach(item =>{
-          cart_item.append(`
-                <tr>
-                  <th scope="row" class="delete-button align-middle" style="cursor: pointer">
-                    <div>
-                        <input type="hidden" value="${item.id}">
-                        <i style="font-size:20px; color: red" class="fa">&#xf014;</i>
-                    </div>
-                  </th>
-                  <td>
-                      <div style="display: flex; align-items: center;"> 
-                        <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
-                        <p class="m-0" style=" margin: 0;">${item.name}</p> 
-                    </div>
-                  </td>
-                  <td><input type="number" min="1" value="${item.quantity}" class="rounded-3 " style="width: auto; max-width: 50px"></td>
-                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
-                </tr>   
-            `)
+        dataType: "json",
         })
+        .done(function (items) {
+          items.forEach((item) => {
+            cart_item.append(`
+                  <tr>
+                    <th scope="row" class="delete-button align-middle" style="cursor: pointer">
+                      <div>
+                          <input type="hidden" value="${item.id}">
+                          <i style="font-size:20px; color: red" class="fa"></i>
+                      </div>
+                    </th>
+                    <td>
+                        <div style="display: flex; align-items: center;"> 
+                          <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
+                          <p class="m-0" style=" margin: 0;">${item.name}</p> 
+                      </div>
+                    </td>
+                    <td><input type="number" min="1" value="${item.quantity}" class="rounded-3 " style="width: auto; max-width: 50px"></td>
+                    <td>${new Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }).format(item.price)}</td>
+                  </tr>   
+              `);
+          });
 
-      }).fail(function () {
-        alert('error')
+          // Re-attach delete button click handlers after loading items
+          attachDeleteHandlers();
+        })
+        .fail(function () {
+          alert('Error loading cart items.');
+        });
+        }
+
+    }
+  }
+
+  function attachDeleteHandlers() {
+    $('.delete-button').on('click', function () {
+      const $row = $(this).closest('tr');
+      const itemId = $row.find('input[type=hidden]').val();
+
+      $.ajax({
+        url: `/cart/delete/${itemId}`,
+        method: 'DELETE',
+      })
+        .done(function (response) {
+          // On successful deletion, remove the row from the table
+          $row.remove();
+        })
+        .fail(function (re) {
+          alert('Error deleting item from cart.');
+        });
+    });
+  }
+  // Call the function to initially load cart items when the page loads
+  loadCartItems();
+
+    function addToCart(){
+      const add_to_cart = $(".add-to-cart")
+      add_to_cart.click(function(){
+        const productDetail = JSON.parse(sessionStorage.getItem('productDetail'));
+        const product_id = productDetail.id
+        const color = $("#product-color").val()
+        const size = $("#product-size").val()
+        const quantity = $("#quantity-input").val()
+        // alert(product_id)
+        const data = {
+          product_id: product_id,
+          color: color,
+          size: size,
+          quantity: quantity
+        }
+        $.ajax({
+          url: `/addToCart/${localStorage.getItem('client')}/`,
+          method: "POST",
+          data: data,
+        }).done(function(response){
+          alert('done')
+        }).fail(function(){
+          alert('error')
+        })
       })
     }
-
+    addToCart()
 });
 
 //js

@@ -19,4 +19,5 @@ urlpatterns = [
     path('products/detail/get/<id>/', views.getProductDetail, name='getProductDetail'),
     path('cart/get/<id>/', views.getCart, name='getCart'),
     path('cart/delete/<id>/', views.deleteCartItem, name='deleteCartItem'),
+    path('addToCart/<id>/', views.addToCart, name='addToCart'),
 ]

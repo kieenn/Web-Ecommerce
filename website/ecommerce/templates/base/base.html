@@ -119,6 +119,9 @@
                   >
                 </div>
               {% else %}
+                  <script>
+                          localStorage.clear()
+                  </script>
               </li>
               <li class="nav-item {% block login %} {% endblock %}" id="loginItem">
                 <a class="nav-link" href="/login/">Login</a>
