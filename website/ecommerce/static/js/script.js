@@ -7,7 +7,7 @@ $(document).ready(function () {
   const $productGridHome = $("#productGrid-home");
   const $productGrid = $("#productGrid");
   const $cartItemTable = $("#cart-item");
-
+  const $registerForm = $("#register-form")
   // --- Utility Functions ---
   function isValidVietnamesePhoneNumber(phoneNumber) {
     return /^(?:\+84|0084|0)[235789]\d{8,9}$/.test(phoneNumber);
@@ -111,6 +111,10 @@ $(document).ready(function () {
     sessionStorage.clear();
   });
 
+  //register
+  $registerForm.submit(function(){
+
+  })
   // --- Contact Form Validation and Submission ---
   function validateForm() {
     let isValid = true;
@@ -361,7 +365,7 @@ function attachDeleteHandlers() {
 
       let cartItems = JSON.parse(localStorage.getItem("cartItems")) || []; // Fix: Check if cartItems exist
       if (cartItems) { // Only filter if cartItems exist
-        cartItems = cartItems.filter(item => item.id != itemId || item.color != itemColor || item.size != itemSize);
+        cartItems = cartItems.filter(item => item.id !== itemId || item.color !== itemColor || item.size !== itemSize);
         alert(cartItems)
          localStorage.setItem("cartItems", JSON.stringify(cartItems));
          $row.remove();
@@ -375,7 +379,7 @@ $(document).on("click", ".item-thumb", function (e) {
     $("#main-image").attr("src", $(this).data("image"));
 });
 
-
+loadCartItems()
 
  //resize img
 function resizeImage(base64Image, maxWidth, maxHeight) {

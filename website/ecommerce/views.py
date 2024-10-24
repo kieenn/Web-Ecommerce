@@ -1,16 +1,10 @@
-from array import array
-
 from django.contrib.auth import logout
-from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.http import  HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from pyexpat.errors import messages
 from rest_framework.response import Response
 from rest_framework.decorators import  api_view
-from rest_framework.views import APIView
 from rest_framework import status
-from select import select
 from .serializers import *
 
 def profile(request):
@@ -142,7 +136,10 @@ def delete_cart_item(request, id):
 
 @api_view(['POST'])
 def add_to_cart(request, id):
-    cart_client = Cart.objects.filter(user_id=id).first()
+    cart_client, created = Cart.objects.get_or_create(user_id=id)  # Get or create cart
+    if created:
+        cart_client.total = 0  # Set initial total or other fields as needed
+        cart_client.save()
     data = request.data
     if isinstance(data, dict):  # Single product
         products_data = [data]  # Wrap in a list for consistent processing
