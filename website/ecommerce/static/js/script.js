@@ -75,6 +75,26 @@ $(document).ready(function () {
         if (response.status) {
           localStorage.setItem("login", "true");
           localStorage.setItem("client", response.id);
+          const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+          console.log(JSON.stringify(cartItems))
+        if (cartItems.length > 0) {
+          // Cart has items - Proceed with AJAX request
+          $.ajax({
+            url: `/addToCart/${response.id}/`, // Replace with your actual URL
+            method: "POST",
+            data: JSON.stringify(cartItems),  // Send cartItems as a JSON string
+            contentType: "application/json", // Important: Specify data type
+          })
+              .done(function () {
+                alert('Added to cart!');
+                localStorage.removeItem('cartItems')
+                // Optionally update cart count or provide other feedback
+              })
+              .fail(function () {
+                alert('Error adding to cart.');
+                // Handle errors gracefully (e.g., display error message)
+              });
+        }
           window.location.href = "/";
         } else {
           alert(response.message);
@@ -204,6 +224,7 @@ $(document).ready(function () {
 
   // --- Product Detail Page - Image Change, Data Display ---
   $(".item-thumb").on("click", function (e) {
+    alert('qq')
     e.preventDefault();
     $("#main-image").attr("src", $(this).data("image"));
   });
@@ -248,84 +269,162 @@ $(document).ready(function () {
     $("#quantity-input").val(quantity + 1);
   });
 
-  // loading cart item
-  function loadCartItems() {
-    $cartItemTable.empty(); // Clear before reloading
-    let totalPrice = 0; // Initialize totalPrice to 0
-    let totalProductQuantity = 0; // Initialize totalQuantity to 0
-    // show client's cart ( login )
-    if (localStorage.getItem('client')) {
-      $.ajax({
-        url: `/cart/get/${localStorage.getItem('client')}`,
-        method: "GET",
-        dataType: "json",
-      })
-        .done(function (items) {
-          items.forEach((item) => {
-            totalPrice += parseFloat(item.price); // Calculate price
-            totalProductQuantity += item.quantity;
-            $cartItemTable.append(`
-              <tr>
-                <th scope="row" class="delete-button align-middle" style="cursor: pointer">
-                  <div>
-                    <input type="hidden" value="${item.id}">
-                    <i style="font-size:20px; color: red" class="fa"></i> 
-                  </div>
-                </th>
-                <td class = "align-middle">
-                  <div style="display: flex; align-items: center;"> 
-                    <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
-                    <p class="m-0">${item.name}</p> 
-                  </div>
-                </td>
-                <td class = "align-middle text-center">${item.size}</td>
-                <td class = "align-middle text-center">${item.color}</td>
-                <td class = "align-middle text-center"><input type="number" min="1" value="${item.quantity}" class="border-0 text-center" style="width: auto; max-width: 50px"></td>
-                <td class = "align-middle text-center">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
-              </tr>   
-            `);
-          });
-          attachDeleteHandlers();
-           $("#totalProduct").append(totalProductQuantity)
-          $("#totalPrice").append(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice))
-        })
-        .fail(function () {
-          alert('Error loading cart items.');
-        });
-    }
-    // if not login
-  }
+// loading cart item
+function loadCartItems() {
+  $cartItemTable.empty(); // Clear before reloading
+  let totalPrice = 0; // Initialize totalPrice to 0
+  let totalProductQuantity = 0; // Initialize totalQuantity to 0
 
-  //delete item in cart
-  function attachDeleteHandlers() {
-    $('.delete-button').on('click', function () {
-      const $row = $(this).closest('tr');
-      const itemId = $row.find('input[type=hidden]').val();
+  // show client's cart (login)
+  if (localStorage.getItem('client')) {
+    $.ajax({
+      url: `/cart/get/${localStorage.getItem('client')}`,
+      method: "GET",
+      dataType: "json",
+    })
+      .done(function(items) {
+        displayCartItemsHelper(items);
+      })
+      .fail(function() {
+        alert('Error loading cart items.');
+      });
+  } else {
+    // Get cart items from localStorage
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    displayCartItemsHelper(cartItems);
+  }
+}
+
+// Helper function to display cart items in the table
+function displayCartItemsHelper(cartItems) {
+  const $cartItemTable = $("#cart-item");
+  $cartItemTable.empty(); // Clear existing cart items
+
+  let totalPrice = 0;
+  let totalProductQuantity = 0;
+
+  cartItems.forEach(item => {
+    totalPrice += parseFloat(item.price); // Calculate price
+    totalProductQuantity += item.quantity;
+    $cartItemTable.append(`
+      <tr>
+        <th scope="row" class="delete-button align-middle" style="cursor: pointer">
+          <div>
+            <input type="hidden" value="${item.id}">
+            <i style="font-size:20px; color: red" class="fa"></i> 
+          </div>
+        </th>
+        <td class = "align-middle">
+          <div style="display: flex; align-items: center;"> 
+            <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
+            <p class="m-0">${item.name}</p> 
+          </div>
+        </td>
+        <td class = "align-middle text-center" id="productSize">${item.size}</td>
+        <td class = "align-middle text-center" id="productColor"> ${item.color ? item.color : ''} </td>
+        <td class = "align-middle text-center"><input type="number" min="1" value="${item.quantity}" class="border-0 text-center" style="width: auto; max-width: 50px"></td>
+        <td class = "align-middle text-center">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
+      </tr>   
+    `);
+  });
+
+  attachDeleteHandlers();
+  $("#totalProduct").text(totalProductQuantity); // Use text() to set the content
+  $("#totalPrice").text(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice));
+}
+
+// Function to attach delete handlers to cart items
+function attachDeleteHandlers() {
+  $('.delete-button').on('click', function () {
+    const $row = $(this).closest('tr');
+    const itemId = $row.find('input[type=hidden]').val();
+    let itemColor = $row.find('#productColor').text().trim();
+    const itemSize = $row.find('#productSize').text()
+    if (itemColor === '') {
+    itemColor = undefined;
+    }
+    // If the user is logged in, make a DELETE request to the server
+    if (localStorage.getItem('client')) {
       $.ajax({
         url: `/cart/delete/${itemId}`,
         method: 'DELETE',
       })
         .done(function (response) {
-          $row.remove();
+          $row.remove();// Refresh the cart display
+          loadCartItems()
         })
         .fail(function () {
           alert('Error deleting item from cart.');
         });
-    });
-  }
+    } else {
+      // Remove item from localStorage
 
-  loadCartItems();
+      let cartItems = JSON.parse(localStorage.getItem("cartItems")) || []; // Fix: Check if cartItems exist
+      if (cartItems) { // Only filter if cartItems exist
+        cartItems = cartItems.filter(item => item.id != itemId || item.color != itemColor || item.size != itemSize);
+        alert(cartItems)
+         localStorage.setItem("cartItems", JSON.stringify(cartItems));
+         $row.remove();
+        loadCartItems()
+      }
+    }
+  });
+}
+$(document).on("click", ".item-thumb", function (e) {
+    e.preventDefault();
+    $("#main-image").attr("src", $(this).data("image"));
+});
 
-  // add to cart
-  $(".add-to-cart").click(function(){
-    const productDetail = JSON.parse(sessionStorage.getItem('productDetail'));
-    const data = {
-      product_id: productDetail.id,
-      color: $("#product-color").val(),
-      size: $("#product-size").val(),
-      quantity: $("#quantity-input").val()
+
+
+ //resize img
+function resizeImage(base64Image, maxWidth, maxHeight) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Calculate new dimensions while maintaining aspect ratio
+      let newWidth = maxWidth;
+      let newHeight = maxWidth / (img.width / img.height);
+      if (newHeight > maxHeight) {
+        newHeight = maxHeight;
+        newWidth = maxHeight * (img.width / img.height);
+      }
+
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      // Draw the image on the canvas
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+      // Get the resized base64 image
+      const resizedBase64 = canvas.toDataURL('image/jpeg', 0.8); // Adjust quality (0.8 is a good default)
+      resolve(resizedBase64);
     };
-    // if client login
+
+    img.onerror = function (error) {
+      reject(error); // Handle errors during image loading
+    };
+
+    img.src = base64Image;
+  });
+}
+
+// add to cart
+$(".add-to-cart").click(function() {
+  const productDetail = JSON.parse(sessionStorage.getItem('productDetail'));
+  const data = {
+    product_id: productDetail.id,
+    color: $("#product-color").val(),
+    size: $("#product-size").val(),
+    quantity: $("#quantity-input").val()
+  };
+
+  // if client login
+  if (localStorage.getItem('client')) {
     $.ajax({
       url: `/addToCart/${localStorage.getItem('client')}/`,
       method: "POST",
@@ -337,9 +436,53 @@ $(document).ready(function () {
     .fail(function(){
       alert('Error adding to cart.');
     });
-  });
-  // if not login
+  } else {
+    // 1. Check if cartItems exist in localStorage
+    let cartItems = JSON.parse(localStorage.getItem("cartItems"));
+    // 2. If cartItems don't exist, initialize an empty array
+    if (!cartItems) {
+      cartItems = [];
+    }
 
+    // 3. Resize the image
+    const imgSrc = $("#main-image").attr('src');
+    resizeImage(imgSrc, 100, 100) // Set your desired maxWidth and maxHeight
+      .then(resizedSrc => {
+        // 4. Check for existing item with matching ID, color, and size
+        const existingItem = cartItems.find(item =>
+          item.product_id === data.product_id &&
+          item.color === data.color &&
+          item.size === data.size
+        );
+
+        // 5. If the item already exists, update its quantity
+        if (existingItem) {
+          existingItem.quantity += parseInt(data.quantity);
+        } else {
+          // 6. Otherwise, add the new item to the cart with resized image
+          cartItems.push({
+            product_id: data.product_id,
+            color: data.color,
+            size: data.size,
+            quantity: parseInt(data.quantity),
+            image: resizedSrc,
+            name: productDetail.name,
+            price: productDetail.price
+          });
+        }
+
+        // 7. Update localStorage with the updated cart items
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+        //alert mess
+        alert('Added to cart!')
+      })
+      .catch(error => {
+        console.error("Error resizing image:", error);
+        alert('img error')
+      });
+  }
+  });
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

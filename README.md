@@ -6,7 +6,7 @@ pip install virtualenv
 
 python<version> -m venv <virtual-environment-name>
 
-step 2: install requirements.txt
+**step 2: install requirements.txt**
 
 pip install -r requirements.txt
 

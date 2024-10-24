@@ -12,6 +12,8 @@ class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
     password = serializers.CharField()
 
+
+
 class ProductInfoSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()

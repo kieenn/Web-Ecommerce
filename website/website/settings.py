@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
 
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -89,6 +88,18 @@ DATABASES = {
         },
     },
 }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "mssql",
+#         "NAME": "ecommerce",
+#         "USER": "sa",
+#         "PASSWORD": "123",
+#         "HOST": "26.193.245.108",
+#         "PORT": "1433",
+#         "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server",
+#         },
+#     },
+# }
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 

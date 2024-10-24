@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from dataclasses import dataclass
 
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.shortcuts import get_object_or_404
 
@@ -266,31 +267,33 @@ class ProductsSkus(models.Model):
         managed = False
         db_table = 'Products_SKUs'
 
-    def get_sku(product_id, color, size):
+    @classmethod
+    def get_sku(cls, product_id, color=None, size=None):
         try:
             product = get_object_or_404(Products, pk=product_id)
-            color_attribute_id = ProductAttributes.objects.get(type='Color').id
-            size_attribute_id = ProductAttributes.objects.get(type='Size').id
 
-            selected_sku = ProductsSkus.objects.filter(
-                product=product
-            ).filter(
-                productattributesvalues__product_attribute_id=color_attribute_id,
-                productattributesvalues__value=color
-            ).filter(
-                productattributesvalues__product_attribute_id=size_attribute_id,
-                productattributesvalues__value=size
-            ).first()
+            # Start building the queryset
+            skus = cls.objects.filter(product=product)
 
-            if selected_sku:
-                return selected_sku
-            else:
-                return None
+            # Add filters based on provided attributes
+            if color:
+                color_attribute_id = ProductAttributes.objects.get(type='Color').id
+                skus = skus.filter(
+                    productattributesvalues__product_attribute_id=color_attribute_id,
+                    productattributesvalues__value=color
+                )
+            if size:
+                size_attribute_id = ProductAttributes.objects.get(type='Size').id
+                skus = skus.filter(
+                    productattributesvalues__product_attribute_id=size_attribute_id,
+                    productattributesvalues__value=size
+                )
 
-        except (Products.DoesNotExist, ProductsSkus.DoesNotExist, ProductAttributes.DoesNotExist) as e:
+            return skus.first()  # Return the first matching SKU
+
+        except (Products.DoesNotExist, ProductAttributes.DoesNotExist) as e:
             print(f"Error retrieving SKU: {e}")
             return None
-
 
 class SubCategories(models.Model):
     parent = models.ForeignKey(Categories, models.DO_NOTHING, blank=True, null=True)
@@ -316,7 +319,7 @@ class Users(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Users'
 
 
