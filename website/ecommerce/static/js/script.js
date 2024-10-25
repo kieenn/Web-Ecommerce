@@ -47,7 +47,28 @@ $(document).ready(function () {
       imageObserver.observe(image);
     });
   }
-
+function addToCart(id){
+     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+          console.log(JSON.stringify(cartItems))
+        if (cartItems.length > 0) {
+          // Cart has items - Proceed with AJAX request
+          $.ajax({
+            url: `/addToCart/${id}/`, // Replace with your actual URL
+            method: "POST",
+            data: JSON.stringify(cartItems),  // Send cartItems as a JSON string
+            contentType: "application/json", // Important: Specify data type
+          })
+              .done(function () {
+                alert('Added to cart!');
+                localStorage.removeItem('cartItems')
+                // Optionally update cart count or provide other feedback
+              })
+              .fail(function () {
+                alert('Error adding to cart.');
+                // Handle errors gracefully (e.g., display error message)
+              });
+        }
+}
   // --- Login/Logout Functionality ---
   $loginForm.submit(function (e) {
     e.preventDefault();
@@ -75,26 +96,7 @@ $(document).ready(function () {
         if (response.status) {
           localStorage.setItem("login", "true");
           localStorage.setItem("client", response.id);
-          const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-          console.log(JSON.stringify(cartItems))
-        if (cartItems.length > 0) {
-          // Cart has items - Proceed with AJAX request
-          $.ajax({
-            url: `/addToCart/${response.id}/`, // Replace with your actual URL
-            method: "POST",
-            data: JSON.stringify(cartItems),  // Send cartItems as a JSON string
-            contentType: "application/json", // Important: Specify data type
-          })
-              .done(function () {
-                alert('Added to cart!');
-                localStorage.removeItem('cartItems')
-                // Optionally update cart count or provide other feedback
-              })
-              .fail(function () {
-                alert('Error adding to cart.');
-                // Handle errors gracefully (e.g., display error message)
-              });
-        }
+          addToCart(response.id)
           window.location.href = "/";
         } else {
           alert(response.message);
@@ -113,7 +115,13 @@ $(document).ready(function () {
 
   //register
   $registerForm.submit(function(){
-
+    const fname = $("#fname")
+    const lname = $("#lname")
+    const birth_of_date = $("#birth_of_date")
+    const emaill = $("#email")
+    const phone_number = $("#phone_number")
+    const password = $("#password")
+    const password2 = $("#confirm_password")
   })
   // --- Contact Form Validation and Submission ---
   function validateForm() {
@@ -225,7 +233,6 @@ $(document).ready(function () {
       },
     });
   });
-
   // --- Product Detail Page - Image Change, Data Display ---
   $(".item-thumb").on("click", function (e) {
     alert('qq')
@@ -254,7 +261,7 @@ $(document).ready(function () {
     productData.images.forEach(image => {
       $('#image-thumbnails').append(`
         <a class="border mx-1 rounded-2 item-thumb" href="#" data-image="${image}">
-          <img width="60" height="60" class="rounded-2" src="${image}" style="object-fit: cover" />
+          <img width="60" height="60" class="rounded-2" src="${image}" style="object-fit: cover" alt=""/>
         </a>
       `);
     });
@@ -287,7 +294,10 @@ function loadCartItems() {
       dataType: "json",
     })
       .done(function(items) {
-        displayCartItemsHelper(items);
+        if($("#order-items").length > 0){
+          orderItems(items)
+        }else displayCartItems(items);
+
       })
       .fail(function() {
         alert('Error loading cart items.');
@@ -295,12 +305,85 @@ function loadCartItems() {
   } else {
     // Get cart items from localStorage
     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    displayCartItemsHelper(cartItems);
+    displayCartItems(cartItems);
   }
 }
+$(document).on("click", ".item-detail", function (e) {
+  let productId = $(this).find('input[type=hidden]').val();
+  let itemName = $(this).find('.item-name').text();
+    $.ajax({
+      url: `/products/detail/get/${productId}/`,
+      method: "GET",
+      success: function (data) {
+        sessionStorage.setItem("productDetail", JSON.stringify(data));
+        window.location.href = `/products/detail/${itemName}/`;
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert("Failed to retrieve product details: " + errorThrown);
+      },
+    });
+});
+function orderItems(orderItems){
+  const shipping_charge = 30000
+   let totalPrice = 0;
+     let totalProductQuantity = 0;
+  const $order_items = $("#order-items")
+  $order_items.empty()
+  orderItems.forEach(item=>{
+   totalPrice += parseFloat(item.price); // Calculate price
+    totalProductQuantity += item.quantity;
+    $order_items.append(`
+                <tr>
+                  <th scope="row" class="align-center">
+                    <img
+                      src="${item.image}"
+                      alt="${item.name}"
+                      title="product-img"
+                      class="avatar-lg rounded"
+                      width="280"
+                      height="280"
+                      style="object-fit: cover"
+                    />
+                  </th>
+                  <td>
+                    <h5 class="font-size-16 text-truncate">
+                       <div style="display: flex; align-items: center; cursor: pointer" class="item-detail"> 
+                        <input type="hidden" value="${item.product_id}">
+                          <p class="m-0 item-name">${item.name}</p> 
+                        </div>
+                    </h5>
+                    <p class="text-muted mb-0 mt-1">size: ${item.size};  </br>
+                     ${item.color === null ? '':(item.color && `color: ${item.color}; </br>`)}
+                    quantity: ${item.quantity}</p>
+                  </td>
+                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
+                  </tr>
+                  `);
+                })
+               $order_items.append(`
+                <tr>
+                  <td colspan="2">
+                    <h5 class="font-size-14 m-0">Sub Total :</h5>
+                  </td>
+                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <h5 class="font-size-14 m-0">Shipping Charge :</h5>
+                  </td>
+                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shipping_charge)}</td>
+                </tr>
+                <tr class="bg-light">
+                  <td colspan="2">
+                    <h5 class="font-size-14 m-0">Total:</h5>
+                  </td>
+                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice+shipping_charge)}</td>
+                </tr>
+                 `);
 
+}
 // Helper function to display cart items in the table
-function displayCartItemsHelper(cartItems) {
+function displayCartItems(cartItems) {
   const $cartItemTable = $("#cart-item");
   $cartItemTable.empty(); // Clear existing cart items
 
@@ -319,9 +402,10 @@ function displayCartItemsHelper(cartItems) {
           </div>
         </th>
         <td class = "align-middle">
-          <div style="display: flex; align-items: center;"> 
-            <img src="${item.image}" alt="${item.name}" width="30" class="rounded-3 me-2"> 
-            <p class="m-0">${item.name}</p> 
+          <div style="display: flex; align-items: center; cursor: pointer" class="item-detail"> 
+          <input type="hidden" value="${item.product_id}">
+            <img src="${item.image}" alt="${item.name}" width="50" class="rounded-3 me-2"> 
+            <p class="m-0 item-name" style="margin-left: 10px!important;">${item.name}</p> 
           </div>
         </td>
         <td class = "align-middle text-center" id="productSize">${item.size}</td>
@@ -487,6 +571,60 @@ $(".add-to-cart").click(function() {
       });
   }
   });
+
+  //shipping info (province, district, ward) call api
+  const host = "https://provinces.open-api.vn/api/";
+
+      // Function to fetch data and populate select options
+      const fetchDataAndPopulateSelect = (apiUrl, selectId) => {
+        $.ajax({
+          url: apiUrl,
+          type: "GET",
+          dataType: "json",
+          success: (response) => {
+            let data;
+            if (selectId === 'province-option') {
+              data = response;
+            } else {
+              data = response[`${selectId.replace('-option', 's')}`];
+            }
+
+            const $selectElement = $(`#${selectId}`);
+            // $selectElement.empty().append('<option value="">Select nameSelect</option>');
+
+            $.each(data, function(index, item) {
+              $selectElement.append(`<option value="${item.code}">${item.name}</option>`);
+            });
+          },
+          error: (error) => {
+            console.error("Error fetching data:", error);
+          }
+        });
+      };
+
+      // Event listeners for select changes
+      $('#province-option').change(function() {
+        const selectedProvinceCode = $(this).val();
+        if (selectedProvinceCode) {
+          fetchDataAndPopulateSelect(`${host}p/${selectedProvinceCode}?depth=2`, 'district-option');
+        } else {
+          $('#district-option, #ward-option').empty().append('<option value="">Select District</option>');
+        }
+      });
+
+      $('#district-option').change(function() {
+        const selectedDistrictCode = $(this).val();
+        if (selectedDistrictCode) {
+          fetchDataAndPopulateSelect(`${host}d/${selectedDistrictCode}?depth=2`, 'ward-option');
+        } else {
+          $('#ward-option').empty().append('<option value="">Select Ward</option>');
+        }
+      });
+
+      // Initial population of provinces
+      fetchDataAndPopulateSelect(`${host}?depth=1`, 'province-option');
+
+
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

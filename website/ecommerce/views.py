@@ -27,7 +27,9 @@ def register(request):
 def cart(request):
     return render(request, 'cart/index.html')
 def checkout(request):
-    return render(request, 'order/checkout.html')
+    if  request.session.session_key:
+         return render(request, 'order/checkout.html')
+    else: return redirect('login')
 def detail(request, product_name):
     return render(request, 'product/detail.html')
 

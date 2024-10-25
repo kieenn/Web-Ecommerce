@@ -10,26 +10,6 @@ from dataclasses import dataclass
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.shortcuts import get_object_or_404
-
-
-class Addresses(models.Model):
-    user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
-    title = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    province = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    district = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    ward = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    street = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    house_number = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    details = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
-    is_default = models.BooleanField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'Addresses'
-
-
 class Cart(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -43,6 +23,7 @@ class Cart(models.Model):
 @dataclass
 class CartItemInformation:
     id: int
+    product_id: int
     name: str
     image: str
     quantity: int
@@ -78,6 +59,7 @@ class CartItem(models.Model):
                 pass
         return CartItemInformation(
             id=self.id,
+            product_id=product.id,
             name=product.name if product else None,  # Ensure product exists before accessing name
             image=product.productimages_set.first().image if product and product.productimages_set.exists() else None,  # Ensure product exists and has images
             quantity=self.quantity,
@@ -100,9 +82,12 @@ class Categories(models.Model):
 class OrderDetails(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    province = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
+    district = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
+    ward = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     receiver_name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     receiver_phone = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    receiver_address = models.ForeignKey(Addresses, models.DO_NOTHING, blank=True, null=True)
+    details = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 

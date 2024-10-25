@@ -34,6 +34,7 @@ class ProductDetailSerializer(serializers.Serializer):
 
 class CartItemSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    product_id = serializers.IntegerField()
     name = serializers.CharField()
     image = serializers.CharField(allow_null=True)
     quantity = serializers.IntegerField()
