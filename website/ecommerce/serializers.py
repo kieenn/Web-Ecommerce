@@ -41,3 +41,18 @@ class CartItemSerializer(serializers.Serializer):
     price = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
     size = serializers.CharField()
     color = serializers.CharField()
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderDetails
+        fields = '__all__'
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+class PaymentDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentDetails
+        fields = '__all__'

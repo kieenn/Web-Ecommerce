@@ -82,14 +82,16 @@ class Categories(models.Model):
 class OrderDetails(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    shipping_charge = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     province = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     district = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     ward = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     receiver_name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     receiver_phone = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    details = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
+    detail = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
     created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+
 
     class Meta:
         managed = False
@@ -99,11 +101,12 @@ class OrderDetails(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(OrderDetails, models.DO_NOTHING, blank=True, null=True)
     product = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
-    products_sku = models.ForeignKey('ProductsSkus', models.DO_NOTHING, blank=True, null=True)
+    name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    Color = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
+    Size = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
-
     class Meta:
         managed = False
         db_table = 'Order_Item'
@@ -112,7 +115,7 @@ class OrderItem(models.Model):
 class PaymentDetails(models.Model):
     order = models.ForeignKey(OrderDetails, models.DO_NOTHING, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    provider = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
+    payment_method = models.ForeignKey('PaymentMethods', models.DO_NOTHING, blank=True, null=True)
     status = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
@@ -126,7 +129,6 @@ class PaymentMethods(models.Model):
     name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     description = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False

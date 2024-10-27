@@ -16,41 +16,48 @@ Register
         <form method="post" id="register-form">
           <div class="divider d-flex align-items-center my-4">
           </div>
-
+            {% csrf_token %}
           <!-- fname input -->
           <div data-mdb-input-init class="form-outline mb-4">
             <input type="text" id="fname" class="form-control form-control-lg"
               placeholder="First Name" />
+              <div class="fname-mess"></div>
           </div>
            <!-- lname input -->
           <div data-mdb-input-init class="form-outline mb-4">
             <input type="text" id="lname" class="form-control form-control-lg"
               placeholder="Last Name" />
+              <div class="lname-mess"></div>
           </div>
           <!-- date of birth input -->
           <div data-mdb-input-init class="form-outline mb-4">
             <input type="date" id="birth_of_date" class="form-control form-control-lg"
               placeholder="First Name" />
+              <div class="bod-mess"></div>
           </div>
           <!-- Email input -->
           <div data-mdb-input-init class="form-outline mb-4">
             <input type="email" id="email" class="form-control form-control-lg"
               placeholder="Email" />
+              <div class="email-mess"></div>
           </div>
           <!-- phone number input -->
           <div data-mdb-input-init class="form-outline mb-4">
             <input type="text" id="phone_number" class="form-control form-control-lg"
               placeholder="Phone number" />
+              <div class="phone-mess"></div>
           </div>
           <!-- Password input -->
           <div data-mdb-input-init class="form-outline mb-3">
             <input type="password" id="password" class="form-control form-control-lg"
               placeholder="Enter password" />
+              <div class="pass-mess"></div>
           </div>
           <!-- confirm Password input -->
           <div data-mdb-input-init class="form-outline mb-3">
             <input type="password" id="confirm_password" class="form-control form-control-lg"
               placeholder="Enter password again" />
+              <div class="pass2-mess"></div>
           </div>
           <div class="text-center text-lg-start mt-4 pt-2" style="text-align: center !important;">
             <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"

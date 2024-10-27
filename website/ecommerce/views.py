@@ -32,7 +32,8 @@ def checkout(request):
     else: return redirect('login')
 def detail(request, product_name):
     return render(request, 'product/detail.html')
-
+def order_success (request):
+    return render(request, 'order/success.html')
 @api_view(['POST'])
 def login_handle(request):
     try:
@@ -185,3 +186,85 @@ def add_to_cart(request, id):
         return HttpResponse("Some products added to cart, check for errors", status=status.HTTP_206_PARTIAL_CONTENT)
     else:
         return HttpResponse("Error adding products to cart", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def order(request, id):
+    user = Users.objects.get(id=id)
+
+    # Get order details from request data
+    receiver_name = request.data.get('receiver_name')
+    receiver_phone = request.data.get('receiver_phone')
+    province = request.data.get('province')
+    district = request.data.get('district')
+    ward = request.data.get('ward')
+    total = request.data.get('total')
+    detail_address = request.data.get('detail')
+    sub_total = request.data.get('sub_total')
+    shipping_charge = request.data.get('shipping_charge')
+    # Create the order details
+    order_detail_data = {
+        'user': user.id,  # Use user.id, not the user object directly
+        'receiver_name': receiver_name,
+        'receiver_phone': receiver_phone,
+        'province': province,
+        'district': district,
+        'ward': ward,
+        'total': total,
+        'detail': detail_address,
+        'sub_total': sub_total,
+        'shipping_charge': shipping_charge,
+    }
+    order_detail_serializer = OrderDetailSerializer(data=order_detail_data)
+
+    # Get the products data (list of product details)
+    cart_items = request.data.get('products')
+    name_payment_method = PaymentMethods.objects.get(name=request.data.get('payment_method'))
+    status_payment = request.data.get('status')
+    print(name_payment_method.id)
+
+
+
+    if order_detail_serializer.is_valid():
+        try:
+            with transaction.atomic():  # Ensure data integrity
+                order_detail = order_detail_serializer.save()
+
+                payment_detail_data = {
+                    'order': order_detail.id,
+                    'amount': order_detail.total,
+                    'payment_method': name_payment_method.id,
+                    'status': status_payment
+                }
+                payment_detail_serializer = PaymentDetailSerializer(data=payment_detail_data)
+                if payment_detail_serializer.is_valid():
+                    payment_detail_serializer.save()
+                else:
+                    # Handle invalid payment detail (e.g., log errors)
+                    return Response(payment_detail_serializer.errors, status=400)
+
+                # Create and save the order items
+                for product_data in cart_items:
+                    # Assuming product_data has product_id, quantity, etc.
+                    order_item_data = {
+                        'order': order_detail.id,
+                        'product': product_data.get('product_id'),
+                        'name': product_data.get('name'),
+                        'quantity': product_data.get('quantity'),
+                        'price': product_data.get('price'),
+                        'Color': product_data.get('color'),
+                        'Size': product_data.get('size'),
+                    }
+                    order_item_serializer = OrderItemSerializer(data=order_item_data)
+                    if order_item_serializer.is_valid():
+                        order_item_serializer.save()
+                    else:
+                        # Handle invalid order item data (e.g., log errors)
+                        return Response(order_item_serializer.errors, status=400)
+                cart_client = Cart.objects.get(user_id=id)
+                CartItem.objects.filter(cart_id=cart_client.id).delete()
+                return Response(order_detail_serializer.data, status=201)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+    else:
+        return Response(order_detail_serializer.errors, status=400)

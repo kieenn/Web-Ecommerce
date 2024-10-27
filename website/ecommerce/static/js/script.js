@@ -7,7 +7,8 @@ $(document).ready(function () {
   const $productGridHome = $("#productGrid-home");
   const $productGrid = $("#productGrid");
   const $cartItemTable = $("#cart-item");
-  const $registerForm = $("#register-form")
+  let regexVietNamCharacter =/^[A-Za-zÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-Za-zÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/
+  let list_products=[]
   // --- Utility Functions ---
   function isValidVietnamesePhoneNumber(phoneNumber) {
     return /^(?:\+84|0084|0)[235789]\d{8,9}$/.test(phoneNumber);
@@ -113,15 +114,87 @@ function addToCart(id){
     sessionStorage.clear();
   });
 
+  function validateRegisterForm(fname, lname, birth_of_date, email, phone_number, password, password2) {
+    let isValid = true;
+    let currentDate = new Date().toJSON().slice(0, 10);
+    if (fname.length < 3 || !regexVietNamCharacter.test(fname)) {
+      $(".fname-mess").html('<p style="color: red">Name must be at least 3 characters long, contain only letters and spaces, and uppercase the first Letter in each word.</p>');
+      isValid = false;
+    } else {
+      $(".fname-mess").empty();
+    }
+    if (lname.length < 3 || !regexVietNamCharacter.test(lname)) {
+      $(".lname-mess").html('<p style="color: red">Name must be at least 3 characters long and contain only letters and spaces.</p>');
+      isValid = false;
+    } else {
+      $(".lname-mess").empty();
+    }
+    if(birth_of_date > currentDate){
+      $(".bod-mess").html('<p style="color: red">Birthday cannot be greater than today</p>');
+      isValid = false;
+    } else {
+      $(".bod-mess").empty();
+    }
+    if (!validateEmail(email)) {
+      $(".email-mess").html('<p style="color: red" >Please enter a valid email address.</p>');
+      isValid = false;
+    } else {
+      $(".email-mess").empty();
+    }
+    if (!isValidVietnamesePhoneNumber(phone_number)) {
+      $(".phone-mess").html('<p style="color: red" >Please enter a valid Vietnam phone number.</p>');
+      isValid = false;
+    } else {
+      $(".phone-mess").empty();
+    }
+    if(password.length < 7){
+        $(".pass-mess").html('<p style="color: red" >Password must have at least 6 characters long.</p>');
+      isValid = false;
+    } else {
+      $(".pass-mess").empty();
+    }
+    if (password !== password2){
+    $(".pass2-mess").html('<p style="color: red" >Passwords do not match. Please try again.</p>');
+      isValid = false;
+    } else {
+      $(".pass2-mess").empty();
+    }
+    return isValid;
+  }
   //register
-  $registerForm.submit(function(){
-    const fname = $("#fname")
-    const lname = $("#lname")
-    const birth_of_date = $("#birth_of_date")
-    const emaill = $("#email")
-    const phone_number = $("#phone_number")
-    const password = $("#password")
-    const password2 = $("#confirm_password")
+    const $registerForm =  $("#register-form")
+$registerForm.submit(function(e){
+    e.preventDefault()
+    const fname = $("#fname").val().trim()
+    const lname = $("#lname").val().trim()
+    let birth_of_date = $("#birth_of_date").val()
+    // birth_of_date = dateFormat(birth_of_date, 'MM-dd-yyyy')
+    const email= $("#email").val().trim()
+    const phone_number = $("#phone_number").val().trim()
+    const password = $("#password").val().trim()
+    const password2 = $("#confirm_password").val().trim()
+    if (!validateRegisterForm(fname, lname, birth_of_date, email, phone_number, password, password2)){
+    return;
+   }
+    const data ={
+      first_name:fname,
+      last_name: lname,
+      birth_of_date:birth_of_date,
+      email:email,
+      password:password,
+      phone_number:phone_number
+    }
+    $.ajax({
+      url: '/register/post',
+      method: 'POST',
+      data: data,
+      dataType: "json",
+      headers: { "X-CSRFToken": "{{ csrf_token }}" },
+    }).done(function(response){
+      window.location.href='/login'
+    }).fail(function(response){
+      alert(response.message)
+    })
   })
   // --- Contact Form Validation and Submission ---
   function validateForm() {
@@ -131,15 +204,15 @@ function addToCart(id){
     const email = $("#InputEmail1").val().trim();
     const subject = $("#InputSubject").val().trim();
 
-    if (name.length < 3 || !/^[a-zA-Z\s]+$/.test(name)) {
+    if (name.length < 3 || !regexVietNamCharacter.test(name)) {
       $("#InputName-message").html('<p style="color: red">Name must be at least 3 characters long and contain only letters and spaces.</p>');
       isValid = false;
     } else {
       $("#InputName-message").empty();
     }
 
-    if (message.length < 10 || !/^[a-zA-Z0-9\s]+$/.test(message)) {
-      $("#InputText-message").html('<p style="color: red" >Message must be at least 10 characters long and contain only letters, numbers, and spaces.</p>');
+    if (message.length < 10) {
+      $("#InputText-message").html('<p style="color: red" >Message must be at least 10 characters long</p>');
       isValid = false;
     } else {
       $("#InputText-message").empty();
@@ -202,14 +275,18 @@ function addToCart(id){
     dataType: "json",
   })
     .done(function (products) {
+      list_products.push(...products)
       const isHomePage = $productGridHome.length > 0;
       const $grid = isHomePage ? $productGridHome : $productGrid;
       $grid.empty();
       // if homepage just show 8 products else all
       const productCount = isHomePage ? Math.min(products.length, 8) : products.length;
+       // list_products.push(...products)
       for (let i = 0; i < productCount; i++) {
-        displayProduct(products[i], $grid);
+
+        displayProduct(list_products[i], $grid);
       }
+      // console.log(list_products)
       lazyLoadImages();
     })
     .fail(function (jqXHR, textStatus, errorThrown) {
@@ -280,6 +357,7 @@ function addToCart(id){
     $("#quantity-input").val(quantity + 1);
   });
 
+  let orderItems = []
 // loading cart item
 function loadCartItems() {
   $cartItemTable.empty(); // Clear before reloading
@@ -294,13 +372,14 @@ function loadCartItems() {
       dataType: "json",
     })
       .done(function(items) {
+        orderItems.push(...items)
         if($("#order-items").length > 0){
-          orderItems(items)
+          DisplayOrderItems(items)
         }else displayCartItems(items);
-
+        // console.log(orderItems)
       })
       .fail(function() {
-        alert('Error loading cart items.');
+        console.log('Error loading cart items.');
       });
   } else {
     // Get cart items from localStorage
@@ -323,8 +402,9 @@ $(document).on("click", ".item-detail", function (e) {
       },
     });
 });
-function orderItems(orderItems){
-  const shipping_charge = 30000
+    let shipping_charge = 30000
+function DisplayOrderItems(orderItems){
+
    let totalPrice = 0;
      let totalProductQuantity = 0;
   const $order_items = $("#order-items")
@@ -365,30 +445,31 @@ function orderItems(orderItems){
                   <td colspan="2">
                     <h5 class="font-size-14 m-0">Sub Total :</h5>
                   </td>
-                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</td>
+                  <td class ='sub_total'>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</td>
                 </tr>
                 <tr>
                   <td colspan="2">
                     <h5 class="font-size-14 m-0">Shipping Charge :</h5>
                   </td>
-                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shipping_charge)}</td>
+                  <td class>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shipping_charge)}</td>
                 </tr>
                 <tr class="bg-light">
                   <td colspan="2">
                     <h5 class="font-size-14 m-0">Total:</h5>
                   </td>
-                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice+shipping_charge)}</td>
+                  <td class="total_price">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice+shipping_charge)}</td>
                 </tr>
                  `);
 
 }
+ let totalProductQuantity = 0;
 // Helper function to display cart items in the table
 function displayCartItems(cartItems) {
   const $cartItemTable = $("#cart-item");
   $cartItemTable.empty(); // Clear existing cart items
 
   let totalPrice = 0;
-  let totalProductQuantity = 0;
+
 
   cartItems.forEach(item => {
     totalPrice += parseFloat(item.price); // Calculate price
@@ -620,11 +701,91 @@ $(".add-to-cart").click(function() {
           $('#ward-option').empty().append('<option value="">Select Ward</option>');
         }
       });
-
       // Initial population of provinces
       fetchDataAndPopulateSelect(`${host}?depth=1`, 'province-option');
 
+$("#checkout").click(function(){
+  // alert(totalProductQuantity)
+  // if(totalProductQuantity > 0){
+    window.location.href = "/checkout/";
+  // }
+})
 
+  function checkoutValidate(billing_name, billing_phone, province_option, district_option, ward_option, detail){
+    let isValid = true
+    let $billing_name_message = $(".billing-name-message")
+     let $billing_phone_message = $(".billing-phone-message")
+
+    if(billing_name.length < 3 || !regexVietNamCharacter.test(billing_name)){
+      $billing_name_message.append('<p style="color: red">Name must be at least 3 characters long and contain only letters and spaces.</p>')
+      isValid = false
+    }else{
+      $billing_name_message.empty()
+    }
+    if(!isValidVietnamesePhoneNumber(billing_phone)){
+       $billing_phone_message.append('<p style="color: red">Please enter valid Vietnam phone number</p>')
+      isValid = false
+    }else{
+      $billing_phone_message.empty()
+    }
+    // Address Validation (Add similar checks for other address fields)
+    if (province_option === "Select Province" || district_option === "Select District" || ward_option === "Select Ward") {
+      $(".address-message").html("<p style='color: red'>Please select a valid province, district, and ward.</p>");
+      isValid = false;
+    } else {
+      $(".address-message").empty();
+    }
+    if(detail.length < 1){
+        $(".detail-message").html("<p style='color: red'>Please enter address detail.</p>");
+      isValid = false;
+    } else {
+      $(".detail-message").empty();
+    }
+
+
+    return isValid;
+  }
+
+  const $proceedCheckOut= $("#proceed-checkout")
+  $proceedCheckOut.click(function(){
+    const billing_name = $("#billing-name").val().trim()
+    const billing_phone = $("#billing-phone").val().trim()
+    const province_option = $("#province-option").find(":selected").text().trim()
+    const district_option = $("#district-option").find(":selected").text().trim()
+    const ward_option = $("#ward-option").find(":selected").text().trim()
+    const detail = $("#address-detail").val().trim()
+    const payment_method =  $('input[name="pay-method"]:checked').val()
+    const sub_total = parseFloat($(".sub_total").text().replace(/\.| ₫/g, ''))
+    const data ={
+      receiver_name: billing_name,
+      receiver_phone: billing_phone,
+      province: province_option,
+      district: district_option,
+      ward: ward_option,
+      sub_total: sub_total,
+      shipping_charge: shipping_charge,
+      total: sub_total+shipping_charge,
+      products: orderItems,
+      detail: detail,
+      payment_method: payment_method,
+      status: "Processing"
+    }
+    console.log(data)
+    // console.log(billing_name, billing_phone, province_option, district_option, ward_option, detail, payment_method)
+    if(checkoutValidate(billing_name, billing_phone, province_option, district_option, ward_option, detail)){
+    $.ajax({
+      url: `/order/post/${localStorage.getItem('client')}`,
+      method: "POST",
+      data: JSON.stringify(data),
+      dataType: 'json',
+      contentType: 'application/json',
+    }).done(function(response){
+       window.location.href ='/order/success'
+      }).fail(function(response){
+        alert(response.error)
+      })
+    }
+  })
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

@@ -33,6 +33,7 @@
                                 id="billing-name"
                                 placeholder="Enter name"
                               />
+                                <div class="billing-name-message"></div>
                             </div>
                           </div>
                           <div class="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
@@ -46,6 +47,7 @@
                                 id="billing-phone"
                                 placeholder="Enter Phone no."
                               />
+                                <div class="billing-phone-message"></div>
                             </div>
                           </div>
                         </div>
@@ -102,10 +104,12 @@
                             </div>
                           </div>
                         </div>
+                          <div class="address-message"></div>
                           <div class="form-group">
                             <label for="address-detail">Detail</label>
                             <textarea class="form-control rounded-3" id="address-detail" rows="3" placeholder="Street address, apartment number, etc."></textarea>
                           </div>
+                          <div class="detail-message"></div>
                       </div>
                     </form>
                   </div>
@@ -135,6 +139,7 @@
                             name="pay-method"
                             id="pay-methodOption1"
                             class="card-radio-input"
+                            value="creditCard"
                           />
                           <span
                             class="card-radio py-3 text-center text-truncate"
@@ -153,6 +158,7 @@
                             name="pay-method"
                             id="pay-methodOption2"
                             class="card-radio-input"
+                            value="paypal"
                           />
                           <span
                             class="card-radio py-3 text-center text-truncate"
@@ -171,6 +177,7 @@
                             name="pay-method"
                             id="pay-methodOption3"
                             class="card-radio-input"
+                            value="cashOnDelivery"
                             checked
                           />
                           <span
@@ -197,7 +204,7 @@
         </div>
         <div class="col">
           <div class="text-end mt-2 mt-sm-0">
-            <a href="#" class="btn btn-success">
+            <a href="#" class="btn btn-success" id ="proceed-checkout">
               <i class="mdi mdi-cart-outline me-1"></i> Proceed
             </a>
           </div>
