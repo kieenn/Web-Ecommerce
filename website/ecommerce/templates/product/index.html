@@ -12,9 +12,13 @@
                 <label for="category-filter">Category:</label>
                 <select class="category-filter form-select">
                     <option value="">All Categories</option>
-                    <option value="category1">Category 1</option>
-                    <option value="category2">Category 2</option>
-                    <option value="category3">Category 3</option>
+                    <!-- Add more categories -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="subcategory-filter">Sub Category:</label>
+                <select class="subcategory-filter form-select">
+                    <option value="">All Sub Categories</option>
                     <!-- Add more categories -->
                 </select>
             </div>
@@ -22,40 +26,45 @@
                 <label for="size-filter ">Size:</label>
                 <select class="size-filter form-select">
                     <option value="">Select Size</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="color-filter">Color:</label>
                 <select class="color-filter form-select">
                     <option value="">Select Color</option>
-                    <option value="red" >Red</option>
-                    <option value="blue">Blue</option>
-                    <option value="green">Green</option>
                 </select>
             </div>
             <div class="filter-group">
+                <label for="price-slider">Price:</label>
                 <div class="price-slider">
-                    <input type="range" id="price-slider" min="0" max="100" value="0">
-                    <div id="price-display">Price: $<span id="price-value">0</span> - $100</div>
+                     <input type="range" id="price-slider" min="" max="" value="">
                 </div>
             </div>
+            <div class="filter-group">
+                <label for="name-filter">Product Name:</label>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="Product Name" id="product-name">
+                </div>
+            </div>
+            <div class="filter-group">
+                <button class="reset-products btn btn-outline-secondary me-md-2 w-100">Reset</button>
+            </div>
+
         </section>
 
         <section class="products">
             <div class="toolbar">
                 <div class="sort-by">
-                    <select class="form-select sort-by">
-                        <option value="popularity">Sort by popularity</option>
-                        <option value="price-low">Sort by price: low to high</option>
-                        <option value="price-high">Sort by price: high to low</option>
-                        <option value="newest">Sort by newest</option>
-                    </select>
+                    <label>
+                        <select class="form-select sort-price">
+                            <option value="popularity">Sort by popularity</option>
+                            <option value="price-low">Sort by price: low to high</option>
+                            <option value="price-high">Sort by price: high to low</option>
+                        </select>
+                    </label>
                 </div>
                 <div class="results">
-                    <span>Showing all 5 results</span>
+                    <p class="product-length"></p>
                 </div>
             </div>
 

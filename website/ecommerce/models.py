@@ -140,6 +140,9 @@ class ProductInfo:
     name: str
     image: str
     price: float
+    attributes: dict
+    category: str
+    subcategory: str
 
 @dataclass
 class ProductsDetails:
@@ -211,12 +214,23 @@ class Products(models.Model):
         """Returns a ProductInfo dataclass instance for this product."""
         image = self.productimages_set.first()  # Assuming related_name is "productimages_set"
         price_info = self.productsskus_set.first()  # Assuming related_name is "productsskus_set"
-
+        sub_category = self.sub_category
+        category = sub_category.parent if sub_category else None
+        attributes = {}
+        for sku in self.productsskus_set.all():
+            for attr_value in sku.productattributesvalues_set.all():
+                attr_type = attr_value.product_attribute.type
+                if attr_type not in attributes:
+                    attributes[attr_type] = []
+                attributes[attr_type].append(attr_value.value)
         return ProductInfo(
             id=self.id,
             name=self.name,
             image=image.image if image else None,
             price=price_info.price if price_info else 0,
+            attributes=attributes,
+            category=category.name if category else None,
+            subcategory=sub_category.name if sub_category else None,
         )
     def get_product_detail(self) -> ProductsDetails:
         images = self.productimages_set.all()

@@ -18,11 +18,14 @@ $(document).ready(function () {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  function displayProduct(product, $grid) {
+function displayProducts(products, $grid) {
+  $grid.empty();
+
+  products.forEach(product => {
     const productHtml = `
-      <div class="product">
+      <div class="product" data-category="${product.category}" data-size="${product.size}" data-color="${product.color}" data-price="${product.price}">
         <input type="hidden" class="product-id" value="${product.id}">
-        <img data-src="${product.image}" alt="${product.name}" class="lazy-load" >
+        <img data-src="${product.image}" alt="${product.name}" class="lazy-load">
         <div class="product-info">
           <h3>${product.name}</h3>
           <p class="price">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</p>
@@ -30,8 +33,20 @@ $(document).ready(function () {
         </div>
       </div>`;
     $grid.append(productHtml);
-  }
+  });
 
+  lazyLoadImages();
+}
+function addUniqueFilterOptions(filterValues, $selectElement) {
+    const existingOptions = new Set($selectElement.find('option').map((_, option) => $(option).val()).get());
+
+    filterValues.forEach(value => {
+      if (!existingOptions.has(value)) {
+        $selectElement.append(`<option value="${value}">${value}</option>`);
+        existingOptions.add(value);
+      }
+    });
+  }
   // if scroll into the div hold img then load else not
   function lazyLoadImages() {
     const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -269,29 +284,57 @@ $registerForm.submit(function(e){
   });
 
   // --- Product Display (Home and Shop) ---
-  $.ajax({
-    url: "/products/get",
-    method: "GET",
-    dataType: "json",
-  })
-    .done(function (products) {
-      list_products.push(...products)
-      const isHomePage = $productGridHome.length > 0;
-      const $grid = isHomePage ? $productGridHome : $productGrid;
-      $grid.empty();
-      // if homepage just show 8 products else all
-      const productCount = isHomePage ? Math.min(products.length, 8) : products.length;
-       // list_products.push(...products)
-      for (let i = 0; i < productCount; i++) {
+ $.ajax({
+  url: "/products/get",
+  method: "GET",
+  dataType: "json",
+})
+  .done(function (products) {
+    list_products.push(...products);
+    const isHomePage = $productGridHome.length > 0;
+    const $grid = isHomePage ? $productGridHome : $productGrid;
 
-        displayProduct(list_products[i], $grid);
-      }
-      // console.log(list_products)
-      lazyLoadImages();
-    })
-    .fail(function (jqXHR, textStatus, errorThrown) {
-      alert("Failed to retrieve products: " + errorThrown);
+    // If homepage, display only 8 products, otherwise display all
+    const productsToDisplay = isHomePage ? products.slice(0, 8) : products;
+    if(!isHomePage){
+        const categories = new Set(products.map(product => product.category));
+    addUniqueFilterOptions(categories, $('.category-filter'));
+     const subcategories = new Set(products.map(product => product.subcategory));
+    addUniqueFilterOptions(subcategories, $('.subcategory-filter'));
+
+   const sizes = new Set(products.map(product => product.attributes.Size).flat());
+    addUniqueFilterOptions(sizes, $('.size-filter'));
+
+     const colors = new Set(products
+      .map(product => product.attributes?.Color) // Optional chaining for safety
+      .flat()
+      .filter(color => color !== undefined) // Filter out undefined values
+    );
+    addUniqueFilterOptions(colors, $('.color-filter'));
+
+    }
+     const minPrice = Math.min(...products.map(product => product.price));
+    const maxPrice = Math.max(...products.map(product => product.price));
+    $("#price-slider").attr({
+       "max" : maxPrice,
+       "min" : minPrice,
+      "value":minPrice
     });
+    $(".price-slider").append(`
+        <div id="price-display">Price: <span id="price-value">${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(minPrice)}</span> - ${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(maxPrice)}</div>
+    `);
+    const $result = $('.results')
+    $result.empty()
+    $result.append(`<p class="product-length">Showing all ${products.length} results</p>`)
+    //handle price slider
+
+    displayProducts(productsToDisplay, $grid);
+  })
+  .fail(function (jqXHR, textStatus, errorThrown) {
+    alert("Failed to retrieve products: " + errorThrown);
+  });
+
+
 
   // --- Product Detail Page ---
   ($productGridHome.add($productGrid)).on("click", ".product", function (e) {
@@ -312,7 +355,6 @@ $registerForm.submit(function(e){
   });
   // --- Product Detail Page - Image Change, Data Display ---
   $(".item-thumb").on("click", function (e) {
-    alert('qq')
     e.preventDefault();
     $("#main-image").attr("src", $(this).data("image"));
   });
@@ -465,7 +507,7 @@ function DisplayOrderItems(orderItems){
  let totalProductQuantity = 0;
 // Helper function to display cart items in the table
 function displayCartItems(cartItems) {
-  const $cartItemTable = $("#cart-item");
+  // const $cartItemTable = $("#cart-item");
   $cartItemTable.empty(); // Clear existing cart items
 
   let totalPrice = 0;
@@ -543,39 +585,40 @@ $(document).on("click", ".item-thumb", function (e) {
     e.preventDefault();
     $("#main-image").attr("src", $(this).data("image"));
 });
+if($("#order-items").length > 0 || $cartItemTable.length > 0){
+  loadCartItems()
+}
 
-loadCartItems()
 
- //resize img
-function resizeImage(base64Image, maxWidth, maxHeight) {
+ function resizeImage(base64Image, maxWidth, maxHeight) {
   return new Promise((resolve, reject) => {
     const img = new Image();
 
-    img.onload = function () {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+    img.onload = function() {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
 
-      // Calculate new dimensions while maintaining aspect ratio
-      let newWidth = maxWidth;
-      let newHeight = maxWidth / (img.width / img.height);
-      if (newHeight > maxHeight) {
-        newHeight = maxHeight;
-        newWidth = maxHeight * (img.width / img.height);
+        let newWidth = maxWidth;
+        let newHeight = maxWidth / (img.width / img.height);
+        if (newHeight > maxHeight) {
+          newHeight = maxHeight;
+          newWidth = maxHeight * (img.width / img.height);
+        }
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+        const resizedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+        resolve(resizedBase64);
+      } catch (error) {
+        reject(error);
       }
-
-      canvas.width = newWidth;
-      canvas.height = newHeight;
-
-      // Draw the image on the canvas
-      ctx.drawImage(img, 0, 0, newWidth, newHeight);
-
-      // Get the resized base64 image
-      const resizedBase64 = canvas.toDataURL('image/jpeg', 0.8); // Adjust quality (0.8 is a good default)
-      resolve(resizedBase64);
     };
 
-    img.onerror = function (error) {
-      reject(error); // Handle errors during image loading
+    img.onerror = function(error) {
+      reject(error);
     };
 
     img.src = base64Image;
@@ -583,7 +626,7 @@ function resizeImage(base64Image, maxWidth, maxHeight) {
 }
 
 // add to cart
-$(".add-to-cart").click(function() {
+$(".add-to-cart").click(async function() {
   const productDetail = JSON.parse(sessionStorage.getItem('productDetail'));
   const data = {
     product_id: productDetail.id,
@@ -592,66 +635,62 @@ $(".add-to-cart").click(function() {
     quantity: $("#quantity-input").val()
   };
 
-  // if client login
-  if (localStorage.getItem('client')) {
-    $.ajax({
-      url: `/addToCart/${localStorage.getItem('client')}/`,
-      method: "POST",
-      data: data,
-    })
-    .done(function(){
-      alert('Added to cart!'); // Or update cart count dynamically
-    })
-    .fail(function(){
-      alert('Error adding to cart.');
-    });
-  } else {
-    // 1. Check if cartItems exist in localStorage
-    let cartItems = JSON.parse(localStorage.getItem("cartItems"));
-    // 2. If cartItems don't exist, initialize an empty array
-    if (!cartItems) {
-      cartItems = [];
-    }
+  try {
+    let resizedSrc; // Declare resizedSrc outside the conditional blocks
 
-    // 3. Resize the image
-    const imgSrc = $("#main-image").attr('src');
-    resizeImage(imgSrc, 100, 100) // Set your desired maxWidth and maxHeight
-      .then(resizedSrc => {
-        // 4. Check for existing item with matching ID, color, and size
-        const existingItem = cartItems.find(item =>
-          item.product_id === data.product_id &&
-          item.color === data.color &&
-          item.size === data.size
-        );
-
-        // 5. If the item already exists, update its quantity
-        if (existingItem) {
-          existingItem.quantity += parseInt(data.quantity);
-        } else {
-          // 6. Otherwise, add the new item to the cart with resized image
-          cartItems.push({
-            product_id: data.product_id,
-            color: data.color,
-            size: data.size,
-            quantity: parseInt(data.quantity),
-            image: resizedSrc,
-            name: productDetail.name,
-            price: productDetail.price
-          });
-        }
-
-        // 7. Update localStorage with the updated cart items
-        localStorage.setItem("cartItems", JSON.stringify(cartItems));
-
-        //alert mess
-        alert('Added to cart!')
-      })
-      .catch(error => {
-        console.error("Error resizing image:", error);
-        alert('img error')
+    if (localStorage.getItem('client')) {
+      // Client is logged in
+      await $.ajax({ // Use await for the AJAX call
+        url: `/addToCart/${localStorage.getItem('client')}/`,
+        method: "POST",
+        data: data
       });
+
+      alert('Added to cart!');
+    } else {
+      // Client is not logged in
+      let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      if (!cartItems) {
+        cartItems = [];
+      }
+
+      const imgSrc = $("#main-image").attr('src');
+
+      // Resize the image using await
+      resizedSrc = await resizeImage(imgSrc, 100, 100);
+
+      const existingItem = cartItems.find(item =>
+        item.product_id === data.product_id &&
+        item.color === data.color &&
+        item.size === data.size
+      );
+
+      if (existingItem) {
+        existingItem.quantity += parseInt(data.quantity);
+      } else {
+        cartItems.push({
+          product_id: data.product_id,
+          color: data.color,
+          size: data.size,
+          quantity: parseInt(data.quantity),
+          image: resizedSrc,
+          name: productDetail.name,
+          price: productDetail.price
+        });
+      }
+
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      alert('Added to cart!');
+    }
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    if (error.message === "Image resizing failed.") {
+      alert('Error adding to cart. Image resizing failed.');
+    } else {
+      alert('Error adding to cart.');
+    }
   }
-  });
+});
 
   //shipping info (province, district, ward) call api
   const host = "https://provinces.open-api.vn/api/";
@@ -786,6 +825,102 @@ $("#checkout").click(function(){
       })
     }
   })
+
+  //filter product
+$('.category-filter, .subcategory-filter, .size-filter, .color-filter, .sort-price').on('change', function() {
+    const filteredProducts = filterProducts(list_products);
+    displayProducts(filteredProducts, $('.product-grid'));
+    const $result = $('.results')
+    $result.empty()
+    $result.append(`<p class="product-length">Showing all ${filteredProducts.length} results</p>`)
+});
+
+$("#product-name").on("input", function() {
+  console.log($(this).val())
+  const filteredProducts = filterProducts(list_products);
+    displayProducts(filteredProducts, $('.product-grid'));
+    const $result = $('.results')
+    $result.empty()
+    $result.append(`<p class="product-length">Showing all ${filteredProducts.length} results</p>`)
+})
+// Handle price slider change (use 'input' event instead of 'change')
+     $("#price-slider").on("input", function() {
+      const value = $(this).val();
+
+  // Format the price using Intl.NumberFormat
+  const formattedValue = Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+
+  $("#price-value").text(formattedValue);
+   const filteredProducts = filterProducts(list_products);
+    displayProducts(filteredProducts, $('.product-grid'));
+    const $result = $('.results')
+    $result.empty()
+    $result.append(`<p class="product-length">Showing all ${filteredProducts.length} results</p>`)
+});
+// $priceSlider.on('input', function() {
+//     const filteredProducts = filterProducts(list_products);
+//     displayProducts(filteredProducts, $('.product-grid'));
+//     const $result = $('.results')
+//     $result.empty()
+//     $result.append(`<p class="product-length">Showing all ${filteredProducts.length} results</p>`)
+// });
+function filterProducts(products) {
+    let filteredProducts = [...products]; // Copy array to avoid modifying original
+    // Filter by Category
+    const selectedCategory = $('.category-filter').val();
+    if (selectedCategory !== '') {
+        filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
+    }
+
+    // Filter by Subcategory
+    const selectedSubcategory = $('.subcategory-filter').val();
+    if (selectedSubcategory !== '') {
+        filteredProducts = filteredProducts.filter(product => product.subcategory === selectedSubcategory);
+    }
+
+    // Filter by Size
+    const selectedSize = $('.size-filter').val();
+    if (selectedSize !== '') {
+        filteredProducts = filteredProducts.filter(product => product.attributes.Size.includes(selectedSize));
+        console.log(filteredProducts)
+    }
+
+    // Filter by Color
+    const selectedColor = $('.color-filter').val()
+    if (selectedColor !== '') {
+        filteredProducts = filteredProducts.filter(product =>
+            product.attributes?.Color?.includes(selectedColor) // Optional Chaining
+        )
+        console.log(filteredProducts)
+    }
+
+    // Filter by Price
+    const minPrice = parseInt($("#price-slider").val(), 10);
+    filteredProducts = filteredProducts.filter(product => product.price >= minPrice);
+
+    // Filter by Product Name
+    const productName = $('#product-name').val().toLowerCase();
+    if (productName !== '') {
+        filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(productName));
+    }
+    const selectedSort = $('.sort-price').val();
+        switch (selectedSort) {
+            case 'price-low':
+                filteredProducts.sort((a, b) => a.price - b.price);
+                console.log(filteredProducts)
+                break;
+            case 'price-high':
+                filteredProducts.sort((a, b) => b.price - a.price);
+                console.log(filteredProducts)
+                break;
+        }
+    return filteredProducts;
+}
+$('.reset-products').click(function(){
+  const $grid = $('.product-grid')
+  $grid.empty()
+  displayProducts(list_products, $grid)
+})
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

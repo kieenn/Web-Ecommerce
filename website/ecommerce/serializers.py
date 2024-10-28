@@ -19,6 +19,9 @@ class ProductInfoSerializer(serializers.Serializer):
     name = serializers.CharField()
     image = serializers.CharField(allow_null=True)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
+    attributes = serializers.DictField()
+    subcategory = serializers.CharField()
+    category = serializers.CharField()
 
 class ProductDetailSerializer(serializers.Serializer):
     id = serializers.IntegerField()
