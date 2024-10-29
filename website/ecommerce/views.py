@@ -3,10 +3,12 @@ from django.db import transaction
 from django.http import  HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.response import Response
-from rest_framework.decorators import  api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
-from .serializers import *
 
+from .serializers import *
+# from rest_framework_api_key.permissions import HasAPIKey
 def profile(request):
     return render(request, 'account/profile.html')
 def logout_view(request):
@@ -40,22 +42,34 @@ def login_handle(request):
         data = request.data
         serializer = LoginSerializer(data=data)
         if serializer.is_valid():
-            user = Users.objects.filter(**serializer.validated_data)
-            if user:
-                request.session['id'] = user.first().id
+            phone_number = serializer.validated_data['phone_number']
+            password = serializer.validated_data['password']
+
+            try:
+                user = Users.objects.get(phone_number=phone_number)
+            except Users.DoesNotExist:
                 return Response({
-                    "id": user.first().id,
+                    "status": False,
+                    "message": "Login Failed - User not found."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            if user.password == password:
+                request.session['user'] = user.id
+                return Response({
+                    "id": user.id,
                     "status": True,
-                    "message": "Login Successful"
-                })
+                    "message": "Login Successful",
+                }, status=status.HTTP_200_OK)
             else:
                 return Response({
                     "status": False,
-                    "message": "Login Failed"
-                })
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+                    "message": "Login Failed - Incorrect password."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+
     except Exception as e:
-       print(e)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def register_handle(request):
@@ -268,3 +282,78 @@ def order(request, id):
             return Response({'error': str(e)}, status=500)
     else:
         return Response(order_detail_serializer.errors, status=400)
+
+@api_view(["GET"])
+def get_profile(request, id):
+    try:
+        user = Users.objects.get(id=id)  # This will raise an exception if user is not found
+        serializer = UserInfoSerializer(user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    except Users.DoesNotExist:  # Handle the specific exception
+        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:  # Catch other potential errors
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def change_password(request, id):
+    try:
+        user = Users.objects.get(id=id)
+
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            # Check if the old password matches
+            if user.check_password(serializer.data.get('old_password')):
+                # Hash the new password before saving
+                user.password = (serializer.data.get('new_password'))
+                user.save()
+                return Response({"message": "Password changed successfully!"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "Incorrect old password."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def forgot_password(request):
+    try:
+        serializer = ForgotPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+           phone_number = serializer.data.get('phone_number')
+           password = serializer.data.get('password')
+           try:
+               user = Users.objects.get(phone_number=phone_number)
+               if user:
+                   user.password = password
+                   user.save()
+                   return Response({"message": "Password changed successfully!"}, status=status.HTTP_200_OK)
+               else:
+                   return Response({"message": "Incorrect phone number."}, status=status.HTTP_400_BAD_REQUEST)
+           except Users.DoesNotExist:
+               return Response({"message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["POST"])
+def verification(request):
+    try:
+        serializer = PhoneNumberAndEmailSerializer(data=request.data)
+        if serializer.is_valid():
+            phone_number = serializer.validated_data['phone_number']  # Use validated data
+            email = serializer.validated_data['email']
+            try:
+                user = Users.objects.get(phone_number=phone_number, email=email)
+                if user:
+                    # User found, handle verification logic here (e.g., send an OTP)
+                    return Response({"message": "Verified."}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"message": "Incorrect phone number."}, status=status.HTTP_400_BAD_REQUEST)
+            except Users.DoesNotExist:
+                # User not found, you might want to handle this differently
+                return Response({"message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

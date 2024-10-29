@@ -8,11 +8,27 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = '__all__'
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['first_name', 'last_name', 'phone_number', 'email', 'birth_of_date']
+
 class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
     password = serializers.CharField()
 
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
 
+class ForgotPasswordSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    password = serializers.CharField()
+
+class PhoneNumberAndEmailSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    email = serializers.EmailField()
 
 class ProductInfoSerializer(serializers.Serializer):
     id = serializers.IntegerField()

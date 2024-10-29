@@ -10,7 +10,7 @@ Account
         <hr>
 
         <div class="row">
-                <form class="needs-validation" novalidate>
+                <form class="needs-validation" novalidate id="personal-info">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
@@ -23,7 +23,6 @@ Account
                             <div class="form-group mb-3">
                                 <label for="last-name" class="form-label">Last Name:</label>
                                 <input type="text" class="form-control" id="last-name" value="bootdey" required>
-
                             </div>
                         </div>
                     </div>
@@ -49,12 +48,45 @@ Account
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                         <button type="submit" class="btn btn-primary ju">Save Changes</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#change-password">Change Password</button>
+                         <button type="submit" class="btn btn-primary ">Save Changes</button>
                     </div>
 
                 </form>
 
         </div>
     </div>
-
+<div class="modal fade" id="change-password" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="old-password" class="col-form-label">Recently Password:</label>
+            <input type="password" class="form-control" id="old-password">
+             <div class="old-password-message"></div> 
+          </div>
+          <div class="mb-3">
+            <label for="new-password" class="col-form-label">New Password:</label>
+            <input type="password" class="form-control" id="new-password">
+              <div class="new-password-message"></div> 
+          </div>
+             <div class="mb-3">
+            <label for="confirm-password" class="col-form-label">New Password Again:</label>
+            <input type="password" class="form-control" id="confirm-password">
+                 <div class="confirm-password-message"></div> 
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-change-password">Save Change</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

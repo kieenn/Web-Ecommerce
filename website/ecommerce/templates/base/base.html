@@ -87,38 +87,38 @@
               <li class="nav-item {% block contact %} {% endblock %}">
                 <a class="nav-link" href="/contact">Contact</a>
               </li>
-              {% if request.session.session_key %}
-              <li class="nav-item dropdown {% block account %} {% endblock %}" id="accountDropdownContainer">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="accountDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i class="fa fa-user" style="font-size: 24px"></i>
-                </a>
-                <div
-                  class="dropdown-menu"
-                  aria-labelledby="accountDropdown"
-                  style="
-                    border: none;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0.1, 0.1);
-                  "
-                >
-                  <a class="dropdown-item" href="/profile/">Profile</a>
-                  <a class="dropdown-item" href="#">Orders</a>
-                  <hr class="dropdown-divider" />
-                  <a
-                    id="logout-button"
-                    class="dropdown-item"
-                    href="/logout/"
-                    >Logout</a
-                  >
-                </div>
+              {% if request.session.user %}
+             <li class="nav-item dropdown" id="accountDropdownContainer">
+  <a
+    class="nav-link dropdown-toggle"
+    href="#"
+    id="accountDropdown"
+    role="button"
+    data-bs-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+  >
+    <i class="fa fa-user" style="font-size: 24px"></i>
+  </a>
+  <div 
+    class="dropdown-menu dropdown-menu-end" 
+    aria-labelledby="accountDropdown"
+    style="
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0.1, 0.1);
+    "
+  >
+    <a class="dropdown-item" href="/profile/">Profile</a>
+    <a class="dropdown-item" href="#">Orders</a>
+    <hr class="dropdown-divider" />
+    <a 
+      id="logout-button" 
+      class="dropdown-item" 
+      href="/logout/"
+    >Logout</a>
+  </div>
+</li>
               {% else %}
                   <script>
                           localStorage.removeItem('client')

@@ -1,5 +1,6 @@
 $(document).ready(function () {
   // --- Constants ---
+  const api_key = "3P66IicZ.dRzpUIoZvO4ppnlrX3sKUL6JLQPYpoFs"
   const $loginForm = $(".login-form");
   const $message = $(".message");
   const $phone = $("#phone");
@@ -65,27 +66,25 @@ function addUniqueFilterOptions(filterValues, $selectElement) {
   }
 function addToCart(id){
      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-          console.log(JSON.stringify(cartItems))
         if (cartItems.length > 0) {
           // Cart has items - Proceed with AJAX request
           $.ajax({
             url: `/addToCart/${id}/`, // Replace with your actual URL
             method: "POST",
-            data: JSON.stringify(cartItems),  // Send cartItems as a JSON string
-            contentType: "application/json", // Important: Specify data type
-          })
-              .done(function () {
-                alert('Added to cart!');
+            data: JSON.stringify(cartItems),
+            contentType: "application/json",// Important: Specify data type
+          }).done(function (response) {
                 localStorage.removeItem('cartItems')
                 // Optionally update cart count or provide other feedback
-              })
-              .fail(function () {
+          }).fail(function () {
                 alert('Error adding to cart.');
                 // Handle errors gracefully (e.g., display error message)
-              });
+          });
         }
 }
   // --- Login/Logout Functionality ---
+  // let accessToken=''
+  // let refreshToken=''
   $loginForm.submit(function (e) {
     e.preventDefault();
     const phoneNumber = $phone.val().trim();
@@ -106,7 +105,8 @@ function addToCart(id){
       method: "POST",
       data: { phone_number: phoneNumber, password: password },
       dataType: "json",
-      headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Assuming you're using Django
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}" }, // Assuming you're using Django
     })
       .done(function (response) {
         if (response.status) {
@@ -435,6 +435,7 @@ $(document).on("click", ".item-detail", function (e) {
     $.ajax({
       url: `/products/detail/get/${productId}/`,
       method: "GET",
+      // Authorization:Api-Key <API_KEY>,
       success: function (data) {
         sessionStorage.setItem("productDetail", JSON.stringify(data));
         window.location.href = `/products/detail/${itemName}/`;
@@ -572,8 +573,8 @@ function attachDeleteHandlers() {
 
       let cartItems = JSON.parse(localStorage.getItem("cartItems")) || []; // Fix: Check if cartItems exist
       if (cartItems) { // Only filter if cartItems exist
-        cartItems = cartItems.filter(item => item.id !== itemId || item.color !== itemColor || item.size !== itemSize);
-        alert(cartItems)
+        cartItems = cartItems.filter(item => item.id != itemId || item.color != itemColor || item.size != itemSize);
+        // alert(cartItems)
          localStorage.setItem("cartItems", JSON.stringify(cartItems));
          $row.remove();
         loadCartItems()
@@ -921,6 +922,169 @@ $('.reset-products').click(function(){
   $grid.empty()
   displayProducts(list_products, $grid)
 })
+
+//handle personal info
+const $personalInfo = $("#personal-info")
+if ($personalInfo.length > 0) {
+  const accessToken = localStorage.getItem('accessToken');
+
+  console.log('accessToken:', accessToken); // Add console logging to check
+
+    $.ajax({
+      url: `/profile/get/${localStorage.getItem('client')}`,
+      method: "GET",
+    })
+    .done(function(response) {
+      $("#first-name").val(response.first_name)
+      $("#last-name").val(response.last_name)
+      $('#user-birth-day').val(response.birth_of_date)
+      $('#user-phone').val(response.phone_number)
+      $('#user-email').val(response.email)
+    })
+    .fail(function(response) {
+      console.error('AJAX Error:', response); // Add error logging
+      alert('qq');
+    });
+}
+function isValidateChangePasswordForm(oldPassword, newPassword, confirmPassword){
+  let isValid = true;
+      if(oldPassword.length < 7){
+        $(".old-password-message").html('<p style="color: red" >Password must have at least 6 characters long.</p>');
+      isValid = false;
+    } else {
+      $(".old-password-message").empty();
+    }
+      if(newPassword.length < 7){
+        $(".new-password-message").html('<p style="color: red" >Password must have at least 6 characters long.</p>');
+      isValid = false;
+    } else if(newPassword === oldPassword) {
+         $(".new-password-message").html('<p style="color: red" >New password must different from old</p>');
+      isValid = false;
+
+    } else{
+        $(".new-password-message").empty();
+      }
+    if (newPassword !== confirmPassword){
+    $(".confirm-password-message").html('<p style="color: red" >Passwords do not match. Please try again.</p>');
+      isValid = false;
+    } else {
+      $(".confirm-password-message").empty();
+    }
+    return isValid
+}
+$("#btn-change-password").click(function() {
+  const oldPassword = $("#old-password").val().trim()
+  const newPassword = $("#new-password").val().trim()
+  const confirmPassword = $("#confirm-password").val().trim()
+  data = {
+    old_password: oldPassword,
+    new_password: newPassword
+  }
+  if (isValidateChangePasswordForm(oldPassword, newPassword, confirmPassword)) {
+    $.ajax({
+      url: `/profile/password/update/${localStorage.getItem('client')}`,
+      method: "post",
+      data: JSON.stringify(data),
+      contentType: 'application/json'
+    }).done(function (response) {
+      alert(response.message)
+    }).fail(function (Status) {
+      if (Status.status === 400) {
+        alert('Failed: Incorrect old password')
+      } else if (Status.status === 500) { // 500 Internal Server Error
+        alert('Server error. Please try again later.');
+      } else { //  General Error, Network Error, or xhr.status is undefined
+        alert(`Failed: Network error. Please try again later.'}`);
+      }
+    })
+  }
+})
+  function isValidateFormFGP1(phone, email){
+    let isValid = true
+    const $phoneMessage =  $('.phone-message')
+    const $emailMessage= $(".email-message")
+    if(!isValidVietnamesePhoneNumber($('#phone-number-fgp').val())){
+      $phoneMessage.empty()
+      $phoneMessage.append(`
+        <p style="color: red">Please enter valid Vietnam phone number</p>
+      `)
+        isValid = false
+    } else{
+        $phoneMessage.empty()
+      }
+   if (!validateEmail(email)) {
+     $emailMessage.empty();
+      $emailMessage.html('<p style="color: red" >Please enter a valid email address.</p>');
+      isValid = false;
+    } else {
+      $emailMessage.empty();
+    }
+    return isValid
+    }
+
+function isValidateFormFGP2(newPassword, confirmPassword){
+  let isValid = true
+   if(newPassword.length < 7){
+        $(".new-password-message").html('<p style="color: red" >Password must have at least 6 characters long.</p>');
+      isValid = false;
+    }
+
+    if (newPassword !== confirmPassword){
+    $(".confirm-password-message").html('<p style="color: red" >Passwords do not match. Please try again.</p>');
+      isValid = false;
+    } else {
+      $(".confirm-password-message").empty();
+    }
+    return isValid
+}
+$("#btn-check").click(function(){
+   const phone = $('#phone-number-fgp').val().trim()
+  alert(phone)
+  const email =$("#email-fgp").val().trim()
+  let data = {
+    phone_number: phone,
+    email: email
+  }
+  if(isValidateFormFGP1(phone, email)){
+    $.ajax({
+      url: '/verification',
+      method:"POST",
+      data: JSON.stringify(data),
+      contentType:'application/json'
+    }).done(function (response){
+      $("#verification").hide()
+      $("#password-input").show()
+      $(".btn-update-password").show()
+      $(".btn-check-info").hide()
+    }).fail(function(){
+      alert('qq')
+    })
+  }
+  })
+$("#btn-update-password").click(function (){
+     const phone = $('#phone-number-fgp').val().trim()
+  console.log(phone)
+    const newPassword = $("#new-password").val().trim()
+  console.log(newPassword)
+  const confirmPassword = $("#confirm-password").val().trim()
+  console.log(confirmPassword)
+   let data ={
+       phone_number: phone,
+      password: newPassword
+    }
+    if(isValidateFormFGP2(newPassword, confirmPassword)){
+      $.ajax({
+        url: '/password/update',
+        method: "POST",
+        data: JSON.stringify(data),
+        contentType:"application/json",
+      }).done(function(response){
+        alert('Update password successfully')
+      }).fail(function (){
+        alert('error')
+      })
+    }
+  })
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

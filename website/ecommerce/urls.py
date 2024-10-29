@@ -23,4 +23,8 @@ urlpatterns = [
     path('register/post', views.register_handle, name='registerHandle'),
     path('order/post/<id>', views.order, name='order'),
     path('order/success', views.order_success, name='orderSuccess'),
+    path('profile/get/<id>/', views.get_profile, name='getProfile'),
+    path('profile/password/update/<id>', views.change_password, name='changePassword'),
+    path('verification', views.verification, name='verification'),
+    path('password/update', views.forgot_password, name='password_reset'),
 ]

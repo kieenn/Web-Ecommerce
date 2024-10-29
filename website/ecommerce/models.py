@@ -322,7 +322,10 @@ class Users(models.Model):
     class Meta:
         managed = True
         db_table = 'Users'
-
+    def check_password(self, password):
+        if self.password == password:
+            return True
+        return False
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150, db_collation='SQL_Latin1_General_CP1_CI_AS')
