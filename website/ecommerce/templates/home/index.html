@@ -1,4 +1,4 @@
-{% extends '../base/base.html' %} {% block title %} Home {% endblock %}
+{% extends '../dashboard-base/base.html' %}
 {% block home %} active {% endblock %} {% block content %} {% load static %}
 <main>
   <section class="hero">
@@ -12,7 +12,7 @@
             fabrics that will elevate your wardrobe and turn heads wherever you
             go.
           </p>
-          <a href="{% url 'products' %}" class="btn btn-primary">Shop Now</a>
+          <a href="/shop/" class="btn btn-primary">Shop Now</a>
         </div>
         <div class="col-md-6">
           <img

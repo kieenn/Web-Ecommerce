@@ -1,2 +1,4 @@
 django~=5.0.9
+mssql-django
 djangorestframework~=3.15.2
+python-dotenv
