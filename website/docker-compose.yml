@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  web:
+    restart: always
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    command: ["sh", "./start.sh"]
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - mssql_db
+    networks:
+      - my-app-network
+
+  mssql_db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "1434:1433" # Or your configured port
+    environment:
+      - SA_PASSWORD=Kiien2509@
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+    volumes:
+      - D:/MSSQL_Data_Container:/var/opt/mssql/data
+    # NO COMMAND SECTION needed
+    networks:
+      - my-app-network
+networks:
+  my-app-network:
+    driver: bridge
+volumes:
+  mssql_data:
+    external: true

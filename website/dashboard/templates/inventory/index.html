@@ -1,0 +1,50 @@
+{% extends '../dashboard-base/base.html' %} {% block title %}Inventory{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center mb-4">Product Sku</h2>
+<div class="row mb-3">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+            <div class="sort-by me-2">
+                <select class="form-select sort-inventory-price-time">
+                    <option selected value="">Sort By</option>
+                    <option value="price-low">Sort by price: low to high</option>
+                    <option value="price-high">Sort by price: high to low</option>
+                    <option value="latest">Sort by Latest</option>
+                    <option value="oldest">Sort by Oldest</option>
+                </select>
+            </div>
+            <div class="search me-2">
+                <input type="text" class="form-control" id="sku-name" placeholder="Search">
+            </div>
+        </div>
+        <button class="btn btn-primary">ADD</button>
+    </div>
+</div>
+<div class="row">
+    <div class="results text-end">
+        <p class="product-length"></p>
+    </div>
+</div>
+        <div class="row">
+            <div class="table-responsive table-responsive-stack">
+                <table class="table table-borderless table-hover">
+              <thead>
+                <tr>
+                  <th scope="col" data-label="Product"  class="text-center" >Product ID</th>
+                  <th scope="col" class="text-center" data-label="Item">Item</th>
+                  <th scope="col" class="text-center" data-label="Sku">Sku</th>
+                  <th scope="col" class="text-center" data-label="Price">Price</th>
+                    <th scope="col" class="text-center" data-label="Quantity">Quantity</th>
+                    <th scope="col" class="text-center" data-label="Created-at">Created at</th>
+                     <th scope="col" class="text-center" data-label="Action">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-inventory">
+                <!-- inventory will be dynamically inserted here -->
+              </tbody>
+            </table>
+            </div>
+              </div>
+  </div>
+{% endblock %}

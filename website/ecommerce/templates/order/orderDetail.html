@@ -1,0 +1,122 @@
+{% extends '../base/base.html' %}
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+   <div class="container">
+<div class="row">
+    				<!-- BEGIN INVOICE -->
+					<div class="col-12">
+						<div class="grid invoice">
+							<div class="grid-body">
+								<div class="invoice-title">
+									<div class="row">
+									</div>
+									<br>
+									<div class="row">
+										<div class="col-12">
+											<h2>invoice<br>
+											<span class="small">order #1082</span></h2>
+										</div>
+									</div>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-6">
+										<address>
+											<strong>Billed To:</strong><br>
+											Twitter, Inc.<br>
+											795 Folsom Ave, Suite 600<br>
+											San Francisco, CA 94107<br>
+											<abbr title="Phone">P:</abbr> (123) 456-7890
+										</address>
+									</div>
+									<div class="col-6 text-end">
+										<address>
+											<strong>Shipped To:</strong><br>
+											Elaine Hernandez<br>
+											P. Sherman 42,<br>
+											Wallaby Way, Sidney<br>
+											<abbr title="Phone">P:</abbr> (123) 345-6789
+										</address>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-6">
+										<address>
+											<strong>Payment Method:</strong><br>
+											Visa ending **** 1234<br>
+										</address>
+									</div>
+									<div class="col-6 text-end">
+										<address>
+											<strong>Order Date:</strong><br>
+											17/06/14
+										</address>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<h3>ORDER SUMMARY</h3>
+                                        <div class="table-responsive table-responsive-stack">
+										<table class="table table-striped">
+											<thead>
+												<tr class="line">
+													<td><strong>#</strong></td>
+													<td class="text-center"><strong>PROJECT</strong></td>
+													<td class="text-center"><strong>HRS</strong></td>
+													<td class="text-end"><strong>RATE</strong></td>
+													<td class="text-end"><strong>SUBTOTAL</strong></td>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>1</td>
+													<td><strong>Template Design</strong><br>A website template is a pre-designed webpage, or set of webpages, that anyone can modify with their own content and images to setup a website.</td>
+													<td class="text-center">15</td>
+													<td class="text-center">$75</td>
+													<td class="text-end">$1,125.00</td>
+												</tr>
+												<tr>
+													<td>2</td>
+													<td><strong>Template Development</strong><br>Web development is a broad term for the work involved in developing a web site for the Internet (World Wide Web) or an intranet (a private network).</td>
+													<td class="text-center">15</td>
+													<td class="text-center">$75</td>
+													<td class="text-end">$1,125.00</td>
+												</tr>
+												<tr class="line">
+													<td>3</td>
+													<td><strong>Testing</strong><br>Take measures to check the quality, performance, or reliability of (something), especially before putting it into widespread use or practice.</td>
+													<td class="text-center">2</td>
+													<td class="text-center">$75</td>
+													<td class="text-end">$150.00</td>
+												</tr>
+                                                
+											</tbody>
+										</table>
+                                        </div>
+                                  <div class="row mb-3">
+                                    <div class="col-md-12 d-flex justify-content-end align-items-center">
+                                        <div class="d-flex flex-column">
+                                            <div class="mb-2 d-flex ">
+                                                <label for="sub-total"><strong>Sub Total:</strong></label>
+                                                <p class="sub-total ms-2">1000</p> </div>
+                                            <div class="mb-2 d-flex ">
+                                                <label for="shipping-charge"><strong>Shipping Charge:</strong></label>
+                                                <p class="shipping-charge ms-2">1000</p>
+                                            </div>
+                                            <div class="mb-2 d-flex ">
+                                                <label for="total"><strong>Total:</strong></label>
+                                                <p class="total ms-2">1000</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END INVOICE -->
+				</div>
+</div>
+{% endblock %}

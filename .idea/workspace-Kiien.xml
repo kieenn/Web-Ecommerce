@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="346fb2c5-0c79-40aa-b452-622b81c12300" name="Changes" comment="22/10/2024:&#10;cart: up date cart site (add two cols: size, color)">
+      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/ecommerce/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/ecommerce/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/ecommerce/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/ecommerce/static/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/ecommerce/templates/base/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/website/ecommerce/templates/base/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/ecommerce/templates/product/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/website/ecommerce/templates/product/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/ecommerce/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/ecommerce/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/website/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/website/website/settings.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;kieenn&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/kieenn/Web-Ecommerce.git&quot;,
+    &quot;accountId&quot;: &quot;c8a2153b-0602-46aa-a7d7-5b84af5ebcfd&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/website/ecommerce/urls.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2mVQVibzwlC5EJCxp6nY7ynzoDK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.Web-Ecommerce.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/maing/OneDrive/Documents/python/projects/Web-Ecommerce&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlserver&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\maing\OneDrive\Documents\python\projects\Web-Ecommerce\website\ecommerce\static\images" />
+      <recent name="C:\Users\maing\OneDrive\Documents\python\projects\Web-Ecommerce\website\ecommerce\static\css" />
+      <recent name="C:\Users\maing\OneDrive\Documents\python\projects\Web-Ecommerce\website\ecommerce\static\fonts" />
+      <recent name="C:\Users\maing\OneDrive\Documents\python\projects\Web-Ecommerce\website\ecommerce\static\font" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\maing\OneDrive\Documents\python\projects\Web-Ecommerce\website\ecommerce" />
+      <recent name="C:\Users\maing\OneDrive\Documents\python\projects\Web-Ecommerce\website\ecommerce\templates\account" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Web-Ecommerce" type="Python.DjangoServer" factoryName="Django server">
+      <module name="Web-Ecommerce" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="website.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (Web-Ecommerce)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8386" />
+      <option name="host" value="localhost" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
+        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="346fb2c5-0c79-40aa-b452-622b81c12300" name="Changes" comment="" />
+      <created>1727159288403</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727159288403</updated>
+      <workItem from="1727159289503" duration="7790000" />
+      <workItem from="1727167283357" duration="3400000" />
+      <workItem from="1727170738717" duration="101000" />
+      <workItem from="1727171461138" duration="154000" />
+      <workItem from="1727182794054" duration="12376000" />
+      <workItem from="1727228525169" duration="8022000" />
+      <workItem from="1727244026324" duration="4098000" />
+      <workItem from="1727355395759" duration="75000" />
+      <workItem from="1727355581711" duration="7836000" />
+      <workItem from="1727417840928" duration="1281000" />
+      <workItem from="1727849582674" duration="2328000" />
+      <workItem from="1727939341242" duration="47000" />
+      <workItem from="1728204006026" duration="3110000" />
+      <workItem from="1728349128222" duration="2493000" />
+      <workItem from="1728367844188" duration="1126000" />
+      <workItem from="1728377334320" duration="51000" />
+      <workItem from="1728393233555" duration="13499000" />
+      <workItem from="1728446431393" duration="3501000" />
+      <workItem from="1728453082387" duration="6544000" />
+      <workItem from="1728474599734" duration="1234000" />
+      <workItem from="1728475956531" duration="17514000" />
+      <workItem from="1728533808575" duration="10458000" />
+      <workItem from="1728550084202" duration="2353000" />
+      <workItem from="1728566381274" duration="7440000" />
+      <workItem from="1728626387705" duration="5911000" />
+      <workItem from="1728647341169" duration="5504000" />
+      <workItem from="1728911245821" duration="8148000" />
+      <workItem from="1728960997529" duration="9711000" />
+      <workItem from="1728971169153" duration="114000" />
+      <workItem from="1728972001753" duration="2671000" />
+      <workItem from="1728980037935" duration="117000" />
+      <workItem from="1728980788166" duration="52000" />
+      <workItem from="1728993288833" duration="629000" />
+      <workItem from="1728999444210" duration="7686000" />
+      <workItem from="1729050585456" duration="4191000" />
+      <workItem from="1729058831058" duration="19967000" />
+      <workItem from="1729141377806" duration="12291000" />
+      <workItem from="1729156064222" duration="8038000" />
+      <workItem from="1729182303014" duration="3713000" />
+      <workItem from="1729219271697" duration="5187000" />
+      <workItem from="1729230556147" duration="4233000" />
+      <workItem from="1729237674946" duration="227000" />
+      <workItem from="1729304476858" duration="200000" />
+      <workItem from="1729353411858" duration="452000" />
+      <workItem from="1729353996971" duration="90000" />
+      <workItem from="1729412432664" duration="964000" />
+      <workItem from="1729512817846" duration="154000" />
+      <workItem from="1729512988381" duration="35000" />
+      <workItem from="1729513036307" duration="95000" />
+      <workItem from="1729513145139" duration="273000" />
+      <workItem from="1729513432433" duration="8054000" />
+      <workItem from="1729561918861" duration="2576000" />
+      <workItem from="1729568650326" duration="60000" />
+      <workItem from="1729568733806" duration="402000" />
+      <workItem from="1729569225498" duration="6734000" />
+      <workItem from="1729577039152" duration="3058000" />
+      <workItem from="1729585102158" duration="1379000" />
+      <workItem from="1729600446423" duration="7303000" />
+      <workItem from="1729607827177" duration="1473000" />
+      <workItem from="1729609344203" duration="4521000" />
+      <workItem from="1729614024075" duration="74000" />
+      <workItem from="1729614105763" duration="4725000" />
+      <workItem from="1729655743264" duration="2418000" />
+      <workItem from="1729662225015" duration="6088000" />
+    </task>
+    <task id="LOCAL-00001" summary="26/09/2024&#10;update fe and route">
+      <option name="closed" value="true" />
+      <created>1727355766551</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1727355766551</updated>
+    </task>
+    <task id="LOCAL-00002" summary="26/09/2024&#10;update fe and route">
+      <option name="closed" value="true" />
+      <created>1727366190336</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1727366190336</updated>
+    </task>
+    <task id="LOCAL-00003" summary="26/09/2024&#10;update fe and route">
+      <option name="closed" value="true" />
+      <created>1727366285337</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1727366285337</updated>
+    </task>
+    <task id="LOCAL-00004" summary="26/09/2024&#10;update fe and route">
+      <option name="closed" value="true" />
+      <created>1728377350167</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1728377350167</updated>
+    </task>
+    <task id="LOCAL-00005" summary="09/10/2024&#10;update:&#10;Login: handle login form">
+      <option name="closed" value="true" />
+      <created>1728492682934</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1728492682934</updated>
+    </task>
+    <task id="LOCAL-00006" summary="09/10/2024&#10;update:&#10;Order: add my order site">
+      <option name="closed" value="true" />
+      <created>1728492738746</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1728492738746</updated>
+    </task>
+    <task id="LOCAL-00007" summary="10/10/2024&#10;update:&#10;contact: handle contact site (send an email when submit)">
+      <option name="closed" value="true" />
+      <created>1728495860174</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1728495860174</updated>
+    </task>
+    <task id="LOCAL-00008" summary="10/10/2024&#10;update:&#10;contact: validate input before send">
+      <option name="closed" value="true" />
+      <created>1728540388695</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1728540388695</updated>
+    </task>
+    <task id="LOCAL-00009" summary="10/10/2024&#10;update:&#10;contact: fix bug in submit contact form not response when success or fail">
+      <option name="closed" value="true" />
+      <created>1728544273405</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1728544273405</updated>
+    </task>
+    <task id="LOCAL-00010" summary="10/10/2024&#10;update:&#10;order: create a checkout site">
+      <option name="closed" value="true" />
+      <created>1728573759273</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1728573759273</updated>
+    </task>
+    <task id="LOCAL-00011" summary="15/10/2024&#10;update:&#10;api: &#10;+ getProductInfo&#10;+ getProductDetail&#10;page: &#10;+ create detail product page&#10;js: handle html dom">
+      <option name="closed" value="true" />
+      <created>1729013464354</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1729013464354</updated>
+    </task>
+    <task id="LOCAL-00012" summary="16/10/2024:&#10;detail site: fetch data">
+      <option name="closed" value="true" />
+      <created>1729095046928</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1729095046928</updated>
+    </task>
+    <task id="LOCAL-00013" summary="17/10/2024:&#10;cart: create api to get items, bug fetch cart item in cart site">
+      <option name="closed" value="true" />
+      <created>1729163943118</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1729163943118</updated>
+    </task>
+    <task id="LOCAL-00014" summary="21/10/2024:&#10;cart: handle delete item in cart">
+      <option name="closed" value="true" />
+      <created>1729519303200</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1729519303200</updated>
+    </task>
+    <task id="LOCAL-00015" summary="22/10/2024:&#10;cart: handle add to cart ( version 1: just handle when login. Have some bugs if when add to cart dont have enough color, size, and quantity)">
+      <option name="closed" value="true" />
+      <created>1729601355215</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1729601355215</updated>
+    </task>
+    <task id="LOCAL-00016" summary="22/10/2024:&#10;cart: handle add to cart ( version 1: just handle when login. Have some bugs if when add to cart dont have enough color, size, and quantity)">
+      <option name="closed" value="true" />
+      <created>1729604575309</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1729604575309</updated>
+    </task>
+    <task id="LOCAL-00017" summary="22/10/2024:&#10;cart: up date cart site (add two cols: size, color)">
+      <option name="closed" value="true" />
+      <created>1729607440458</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1729607440458</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="26/09/2024&#10;update fe and route" />
+    <MESSAGE value="09/10/2024&#10;update:&#10;Login: handle login form" />
+    <MESSAGE value="09/10/2024&#10;update:&#10;Order: add my order site" />
+    <MESSAGE value="10/10/2024&#10;update:&#10;contact: handle contact site (send an email when submit)" />
+    <MESSAGE value="10/10/2024&#10;update:&#10;contact: validate input before send" />
+    <MESSAGE value="10/10/2024&#10;update:&#10;contact: fix bug in submit contact form not response when success or fail" />
+    <MESSAGE value="10/10/2024&#10;update:&#10;order: create a checkout site" />
+    <MESSAGE value="15/10/2024&#10;update:&#10;api: &#10;+ getProductInfo&#10;+ getProductDetail&#10;page: &#10;+ create detail product page&#10;js: handle html dom" />
+    <MESSAGE value="16/10/2024:&#10;detail site: fetch data" />
+    <MESSAGE value="17/10/2024:&#10;cart: create api to get items, bug fetch cart item in cart site" />
+    <MESSAGE value="21/10/2024:&#10;cart: handle delete item in cart" />
+    <MESSAGE value="22/10/2024:&#10;cart: handle add to cart ( version 1: just handle when login. Have some bugs if when add to cart dont have enough color, size, and quantity)" />
+    <MESSAGE value="22/10/2024:&#10;cart: up date cart site (add two cols: size, color)" />
+    <option name="LAST_COMMIT_MESSAGE" value="22/10/2024:&#10;cart: up date cart site (add two cols: size, color)" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Web_Ecommerce$test.coverage" NAME="test Coverage Results" MODIFIED="1729667242577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

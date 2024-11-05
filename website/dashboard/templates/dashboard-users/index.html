@@ -1,0 +1,51 @@
+{% extends '../dashboard-base/base.html' %} {% block title %}Users{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center mb-4">Users</h2>
+<div class="row mb-3">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+            <div class="sort-by me-2">
+
+                <select class="form-select sort-user-time" id="sort-select">
+                    <option selected value="">Sort By</option>
+                    <option value="latest">Sort by Latest</option>
+                    <option value="oldest">Sort by Oldest</option>
+                </select>
+            </div>
+            <div class="search me-2">
+                <input type="text" class="form-control" id="user-name" placeholder="Search">
+            </div>
+        </div>
+        <button class="btn btn-primary">ADD</button>
+    </div>
+</div>
+<div class="row">
+    <div class="results text-end">
+        <p class="product-length"></p>
+    </div>
+</div>
+
+        <div class="row">
+            <div class="table-responsive table-responsive-stack">
+                <table class="table table-borderless table-hover">
+              <thead>
+                <tr>
+                  <th scope="col" data-label="User-id"  class="text-center" >User ID</th>
+                  <th scope="col" class="text-center" data-label="firstName">First Name</th>
+                  <th scope="col" class="text-center" data-label="lastName">Last Name</th>
+                  <th scope="col" class="text-center" data-label="Email">Email</th>
+                    <th scope="col" class="text-center" data-label="Phone">Phone</th>
+                    <th scope="col" class="text-center" data-label="Birthday">Birthday</th>
+                    <th scope="col" class="text-center" data-label="Created-at">Create at</th>
+                     <th scope="col" class="text-center" data-label="Action">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-users">
+                <!-- users will be dynamically inserted here -->
+              </tbody>
+            </table>
+            </div>
+              </div>
+  </div>
+{% endblock %}

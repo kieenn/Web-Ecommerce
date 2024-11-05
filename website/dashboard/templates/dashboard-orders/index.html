@@ -1,0 +1,53 @@
+{% extends '../dashboard-base/base.html' %} {% block title %}Inventory{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center mb-4">Orders</h2>
+   <div class="row mb-3">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+            <div class="sort-by me-2">
+                <select class="form-select sort-order-time-price">
+                    <option selected value="">Sort By</option>
+                    <option value="price-low">Sort by Total: low to high</option>
+                    <option value="price-high">Sort by Total: high to low</option>
+                    <option value="latest">Sort by Latest</option>
+                    <option value="oldest">Sort by Oldest</option>
+                </select>
+            </div>
+            <div class="search me-2">
+                <input type="text" class="form-control" id="order-input" placeholder="Search">
+            </div>
+        </div>
+        <button class="btn btn-primary">ADD</button>
+    </div>
+</div>
+<div class="row">
+    <div class="results text-end">
+        <p class="product-length"></p>
+    </div>
+</div>
+        <div class="row">
+            <div class="table-responsive table-responsive-stack">
+                <table class="table table-borderless table-hover">
+              <thead>
+                <tr>
+                    <th scope="col" class="text-center" data-label="Order-id">Order ID</th>
+                    <th scope="col" class="text-center" data-label="Created-at">Created at</th>
+{#                  <th scope="col" class="text-center" data-label="Item">User ID</th>#}
+                  <th scope="col" class="text-center" data-label="User-name">Full Name</th>
+                  <th scope="col" class="text-center" data-label="Receiver-name">Receiver Name</th>
+                    <th scope="col" class="text-center" data-label="Receiver-phone">Receiver Phone</th>
+                     <th scope="col" class="text-center" data-label="Address">Address</th>
+                     <th scope="col" class="text-center" data-label="Total">Total</th>
+                     <th scope="col" class="text-center" data-label="Action">Action</th>
+
+                </tr>
+              </thead>
+              <tbody id="dashboard-orders">
+                <!-- orders will be dynamically inserted here -->
+              </tbody>
+            </table>
+            </div>
+              </div>
+  </div>
+{% endblock %}

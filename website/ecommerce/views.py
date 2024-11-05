@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.db import transaction
+from django.db.models import Q
 from django.http import  HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.response import Response
@@ -7,13 +8,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 
+from dashboard.serializers import OrderSerializer
 from .serializers import *
 # from rest_framework_api_key.permissions import HasAPIKey
 def profile(request):
     return render(request, 'account/profile.html')
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('ecommerce:login')
 def index(request):
     return render(request, 'home/index.html')
 def products(request):
@@ -28,14 +30,22 @@ def register(request):
     return render(request, 'account/signup.html')
 def cart(request):
     return render(request, 'cart/index.html')
+def myOrders(request):
+    return render(request, 'order/myOrder.html')
 def checkout(request):
-    if  request.session.session_key:
-         return render(request, 'order/checkout.html')
-    else: return redirect('login')
+    user_id = request.session.get('user')  # Use .get() to avoid KeyError
+    if user_id:
+        # You might want to retrieve the full user object here if you need more than just the id
+        # user = User.objects.get(pk=user_id)
+        return render(request, 'order/checkout.html')
+    else:
+        return redirect('ecommerce:login')
 def detail(request, product_name):
     return render(request, 'product/detail.html')
 def order_success (request):
     return render(request, 'order/success.html')
+def myOrderDetail(request):
+    return render(request, 'order/orderDetail.html')
 @api_view(['POST'])
 def login_handle(request):
     try:
@@ -91,7 +101,10 @@ def register_handle(request):
 def get_products_info(request):
     try:
         # If you want to get ALL products:
-        all_products = Products.objects.all()
+        all_products = Products.objects.filter(
+            Q(productsskus__isnull=False)
+        )
+        all_products = set(all_products)
 
         # Or, if you want to filter products (e.g., by category):
         # category_id = request.query_params.get('category', None)
@@ -357,3 +370,15 @@ def verification(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(["GET"])
+def get_my_orders(request, id):
+    try:
+        orders = get_orders_by_user_id(id)
+        serializer = MyOrderSerializer(orders, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+

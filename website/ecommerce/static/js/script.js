@@ -284,15 +284,16 @@ $registerForm.submit(function(e){
   });
 
   // --- Product Display (Home and Shop) ---
- $.ajax({
+     const isHomePage = $productGridHome.length > 0;
+    const $grid = isHomePage ? $productGridHome : $productGrid;
+if($grid.length > 0){
+  $.ajax({
   url: "/products/get",
   method: "GET",
   dataType: "json",
 })
   .done(function (products) {
     list_products.push(...products);
-    const isHomePage = $productGridHome.length > 0;
-    const $grid = isHomePage ? $productGridHome : $productGrid;
 
     // If homepage, display only 8 products, otherwise display all
     const productsToDisplay = isHomePage ? products.slice(0, 8) : products;
@@ -333,6 +334,8 @@ $registerForm.submit(function(e){
   .fail(function (jqXHR, textStatus, errorThrown) {
     alert("Failed to retrieve products: " + errorThrown);
   });
+}
+
 
 
 
@@ -644,7 +647,9 @@ $(".add-to-cart").click(async function() {
       await $.ajax({ // Use await for the AJAX call
         url: `/addToCart/${localStorage.getItem('client')}/`,
         method: "POST",
-        data: data
+        data: data,
+         headers: {
+        "X-CSRFToken": "{{ csrf_token }}" }
       });
 
       alert('Added to cart!');
@@ -1085,6 +1090,92 @@ $("#btn-update-password").click(function (){
       })
     }
   })
+  //get my orders
+  const $result = $('.results')
+  let list_orders=[]
+  const $my_orders = $("#my-orders")
+   if($my_orders.length > 0){
+        $.ajax({
+            url: `/myOrders/get/${localStorage.getItem('client')}`,
+            method: "GET",
+            contentType: 'application/json'
+        }).done(function(orders){
+            list_orders.push(...orders)
+            displayOrders(orders, $my_orders)
+            $result.empty()
+        $result.append(`<p class="product-length">Showing all ${orders.length} results</p>`)
+        }).fail(function(){
+             console.error("Error fetching orders:", error); // Log the error to the console
+            alert('Error loading inventory. Please check the console for details.'); // More informative alert
+        })
+    }
+function displayOrders(orders, $grid){
+         $grid.empty();
+    orders.forEach(order => {
+        $grid.append(`
+          <tr>
+            <td scope="row" class="-button align-middle text-center">
+                ${order.order_id}
+            </td>
+            <td class="align-middle text-center"> ${order.created_at.slice(0, 10)}  ${order.created_at.slice(11, 19)} </td>
+            <td class="align-middle text-center"> 
+                <p class="m-0 item-name">${order.user_name}</p> 
+            </td>
+            <td class="align-middle text-center">${order.receiver_name}</td>
+            <td class="align-middle text-center">${order.receiver_phone}</td>
+            <td class="align-middle text-center">
+            ${order.detail+', ' + order.ward+ ', </br>'+order.district+', '+order.province} 
+            </td>
+            <td class="align-middle text-center">${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total)}</td>
+            <td class="align-middle text-center">
+                Processing
+            </td>
+          </tr>   
+        `);
+    });
+}
+   // filter order
+     $("#order-input, .sort-order-time-price").on("change, input", function (e) {
+    const orders = filterMyOrders(list_orders);
+    displayOrders(orders, $my_orders);
+    $result.empty()
+        $result.append(`<p class="product-length">Showing all ${orders.length} results</p>`)
+});
+
+function filterMyOrders(orders) {
+    let filtered_my_orders = [...orders];
+
+    const orderInput = $('#order-input').val().toLowerCase();
+    if (orderInput !== '') {
+        filtered_my_orders = filtered_my_orders.filter(order =>
+            order.order_id.toString().includes(orderInput) ||
+            order.user_name.toLowerCase().includes(orderInput) ||
+            order.receiver_name.toLowerCase().includes(orderInput) ||
+            order.receiver_phone.toString().includes(orderInput) ||
+            order.detail.toLowerCase().includes(orderInput) ||
+            order.ward.toLowerCase().includes(orderInput) ||
+            order.district.toLowerCase().includes(orderInput) ||
+            order.province.toLowerCase().includes(orderInput)
+        );
+    }
+
+    const selectedSort = $('.sort-order-time-price').val();
+    switch (selectedSort) {
+        case 'latest':
+            filtered_my_orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            break;
+        case 'oldest':
+            filtered_my_orders.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            break;
+        case 'price-low':
+            filtered_my_orders.sort((a, b) => parseInt(a.total) - parseInt(b.total)); // Convert to numbers for sorting
+            break;
+        case 'price-high':
+            filtered_my_orders.sort((a, b) => parseInt(b.total) - parseInt(a.total)); // Convert to numbers for sorting
+            break;
+    }
+
+    return filtered_my_orders;}
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

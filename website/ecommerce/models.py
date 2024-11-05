@@ -6,6 +6,8 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from dataclasses import dataclass
+from datetime import datetime
+from decimal import Decimal
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -13,8 +15,6 @@ from django.shortcuts import get_object_or_404
 class Cart(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -35,8 +35,7 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, models.DO_NOTHING, blank=True, null=True)
     products_sku = models.ForeignKey('ProductsSkus', models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+
 
     class Meta:
         managed = False
@@ -71,14 +70,23 @@ class CartItem(models.Model):
 class Categories(models.Model):
     name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     description = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'Categories'
 
-
+@dataclass
+class MyOrder:
+    order_id: int
+    user_name: str
+    receiver_name: str
+    receiver_phone: str
+    created_at : datetime
+    detail: str
+    ward: str
+    district: str
+    province: str
+    total: Decimal
 class OrderDetails(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -98,6 +106,26 @@ class OrderDetails(models.Model):
         db_table = 'Order_Details'
 
 
+    def get_my_order(self)->MyOrder:
+        user_name = self.user.last_name +' ' +self.user.first_name
+        return MyOrder(
+            order_id=int(self.id),
+            user_name=user_name,
+            receiver_name=self.receiver_name,
+            receiver_phone=self.receiver_phone,
+            created_at=self.created_at,
+            detail=self.detail,
+            ward=self.ward,
+            district=self.district,
+            province=self.province,
+            total=self.total,
+        )
+
+def get_orders_by_user_id(user_id):
+    """Retrieves all orders for a given user ID."""
+    orders = OrderDetails.objects.filter(user_id=user_id)
+    return [order.get_my_order() for order in orders]
+
 class OrderItem(models.Model):
     order = models.ForeignKey(OrderDetails, models.DO_NOTHING, blank=True, null=True)
     product = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
@@ -106,7 +134,6 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     Color = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     Size = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'Order_Item'
@@ -117,8 +144,7 @@ class PaymentDetails(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     payment_method = models.ForeignKey('PaymentMethods', models.DO_NOTHING, blank=True, null=True)
     status = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+
 
     class Meta:
         managed = False
@@ -188,8 +214,6 @@ class ProductAttributesValues(models.Model):
 class ProductImages(models.Model):
     product = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
     image = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -202,7 +226,7 @@ class Products(models.Model):
     summary = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     sub_category = models.ForeignKey('SubCategories', models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
+
 
     class Meta:
         managed = False
@@ -263,7 +287,7 @@ class ProductsSkus(models.Model):
     sku = models.CharField(primary_key=True, max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS')
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
-
+    created_at = models.DateTimeField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'Products_SKUs'
@@ -301,7 +325,6 @@ class SubCategories(models.Model):
     name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     description = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -309,7 +332,6 @@ class SubCategories(models.Model):
 
 
 class Users(models.Model):
-    avatar = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     first_name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     last_name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     email = models.CharField(unique=True, max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS')
@@ -317,7 +339,6 @@ class Users(models.Model):
     birth_of_date = models.DateField(blank=True, null=True)
     phone_number = models.CharField(unique=True, max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = True

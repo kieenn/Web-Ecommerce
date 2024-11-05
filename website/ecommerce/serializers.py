@@ -1,4 +1,4 @@
-from django.contrib.auth.password_validation import validate_password
+
 from rest_framework import serializers
 from rest_framework.serializers import ListSerializer
 from rest_framework.validators import UniqueValidator
@@ -75,3 +75,15 @@ class PaymentDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentDetails
         fields = '__all__'
+
+class MyOrderSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+    user_name = serializers.CharField()
+    receiver_name = serializers.CharField()
+    receiver_phone = serializers.CharField()
+    detail = serializers.CharField()
+    ward = serializers.CharField()
+    district = serializers.CharField()
+    province = serializers.CharField()
+    total = serializers.IntegerField()
+    created_at = serializers.DateTimeField()

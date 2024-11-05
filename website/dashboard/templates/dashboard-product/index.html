@@ -1,0 +1,57 @@
+{% extends '../dashboard-base/base.html' %} {% block title %}Products{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center mb-4">Products</h2>
+       <div class="row mb-3">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+            <div class="sort-by me-2">
+                <select class="form-select sort-products-time">
+                    <option selected value="">Sort By</option>
+                    <option value="latest">Sort by Latest</option>
+                    <option value="oldest">Sort by Oldest</option>
+                </select>
+            </div>
+            <div class="sort-by me-2">
+                <select class="form-select category-filter">
+                    <option selected value="">Sort By Category</option>
+                </select>
+            </div>
+            <div class="sort-by me-2">
+                <select class="form-select subcategory-filter">
+                    <option selected value="">Sort By Subcategory</option>
+                </select>
+            </div>
+            <div class="search me-2">
+                <input type="text" class="form-control" id="dashboard-products-name" placeholder="Search">
+            </div>
+        </div>
+        <button class="btn btn-primary">ADD</button>
+    </div>
+</div>
+<div class="row">
+    <div class="results text-end">
+        <p class="product-length"></p>
+    </div>
+</div>
+        <div class="row">
+            <div class="table-responsive table-responsive-stack">
+                <table class="table table-borderless table-hover">
+              <thead>
+                <tr>
+                  <th scope="col" data-label="Product"  class="text-center" >Product ID</th>
+                  <th scope="col" class="text-center" data-label="Item">Item</th>
+                  <th scope="col" class="text-center" data-label="Category">Category</th>
+                  <th scope="col" class="text-center" data-label="sub-category">Sub Category</th>
+                    <th scope="col" class="text-center" data-label="Created-at">Created at</th>
+                     <th scope="col" class="text-center" data-label="Action">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-products">
+                <!-- products items will be dynamically inserted here -->
+              </tbody>
+            </table>
+            </div>
+              </div>
+  </div>
+{% endblock %}
