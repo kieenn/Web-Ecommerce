@@ -87,3 +87,28 @@ class MyOrderSerializer(serializers.Serializer):
     province = serializers.CharField()
     total = serializers.IntegerField()
     created_at = serializers.DateTimeField()
+
+class MyOrderDetailItemsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    quantity = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
+    Color = serializers.CharField()
+    Size = serializers.CharField()
+
+class MyOrderDetailsSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+    user_name = serializers.CharField()
+    receiver_name = serializers.CharField()
+    receiver_phone = serializers.CharField()
+    detail = serializers.CharField()
+    ward = serializers.CharField()
+    district = serializers.CharField()
+    province = serializers.CharField()
+    total = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
+    sub_total = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
+    shipping_charge = serializers.DecimalField(max_digits=10, decimal_places=2, allow_null=True)
+    created_at = serializers.DateTimeField()
+    orderItems = serializers.ListField(child=MyOrderDetailItemsSerializer())
+    payment_method = serializers.CharField()
+
+

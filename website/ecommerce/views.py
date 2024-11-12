@@ -1,3 +1,5 @@
+from lib2to3.fixes.fix_input import context
+
 from django.contrib.auth import logout
 from django.db import transaction
 from django.db.models import Q
@@ -8,6 +10,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 
+from dashboard.models import get_all_order
 from dashboard.serializers import OrderSerializer
 from .serializers import *
 # from rest_framework_api_key.permissions import HasAPIKey
@@ -40,12 +43,18 @@ def checkout(request):
         return render(request, 'order/checkout.html')
     else:
         return redirect('ecommerce:login')
-def detail(request, product_name):
-    return render(request, 'product/detail.html')
+def detail(request, product_name, id):
+    context={
+        'product_id': id,
+    }
+    return render(request, 'product/detail.html', context)
 def order_success (request):
     return render(request, 'order/success.html')
-def myOrderDetail(request):
-    return render(request, 'order/orderDetail.html')
+def my_OrderDetail(request, id):
+    context ={
+        'order_id': id
+    }
+    return render(request, 'order/orderDetail.html', context)
 @api_view(['POST'])
 def login_handle(request):
     try:
@@ -123,12 +132,14 @@ def get_products_info(request):
 
 
 @api_view(['GET'])
-def get_product_detail(request,id):
+def get_product_detail(request, id):
     try:
         product = Products.objects.get(id=id)
-        product_detail = product.get_product_detail()
+        product_detail = product.get_product_detail()  # Assuming this method exists
         serializer = ProductDetailSerializer(product_detail, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    except Products.DoesNotExist:
+        return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -186,7 +197,7 @@ def add_to_cart(request, id):
             color = product_data.get('color')
             size = product_data.get('size')
             quantity = int(product_data.get('quantity', 1))
-
+            print(product_id, color, size, quantity)
             selected_sku = ProductsSkus.get_sku(product_id, color=color, size=size)
 
             if selected_sku:
@@ -231,7 +242,7 @@ def order(request, id):
     shipping_charge = request.data.get('shipping_charge')
     # Create the order details
     order_detail_data = {
-        'user': user.id,  # Use user.id, not the user object directly
+        'user': user.id,
         'receiver_name': receiver_name,
         'receiver_phone': receiver_phone,
         'province': province,
@@ -380,5 +391,33 @@ def get_my_orders(request, id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def get_order_detail(request,id):
+    try:
+        order_detail = get_order_details_by_order_id(id)
+        serializer = MyOrderDetailsSerializer(order_detail)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def update_profile(request):
+    try:
+        profile_data = request.data
+        serializer = UserInfoSerializer(data=profile_data)
+        if serializer.is_valid():
+            first_name = serializer.validated_data.get('first_name')
+            last_name = serializer.validated_data.get('last_name')
+            email = serializer.validated_data.get('email')
+            phone_number = serializer.validated_data.get('phone_number')
+            birth_of_date = serializer.validated_data.get('birth_of_date')
+            gender = serializer.validated_data.get('gender')
+            user = Users.objects.get(phone_number=phone_number)
+            user.update_profile(first_name, last_name, email, phone_number, birth_of_date, gender)
+            return Response({"message": "Profile updated successfully!"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

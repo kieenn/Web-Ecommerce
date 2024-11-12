@@ -1,6 +1,6 @@
 $(document).ready(function () {
   // --- Constants ---
-  const api_key = "3P66IicZ.dRzpUIoZvO4ppnlrX3sKUL6JLQPYpoFs"
+  // const api_key = "3P66IicZ.dRzpUIoZvO4ppnlrX3sKUL6JLQPYpoFs"
   const $loginForm = $(".login-form");
   const $message = $(".message");
   const $phone = $("#phone");
@@ -82,9 +82,6 @@ function addToCart(id){
           });
         }
 }
-  // --- Login/Logout Functionality ---
-  // let accessToken=''
-  // let refreshToken=''
   $loginForm.submit(function (e) {
     e.preventDefault();
     const phoneNumber = $phone.val().trim();
@@ -335,35 +332,35 @@ if($grid.length > 0){
     alert("Failed to retrieve products: " + errorThrown);
   });
 }
-
-
-
-
   // --- Product Detail Page ---
   ($productGridHome.add($productGrid)).on("click", ".product", function (e) {
     e.preventDefault();
     const productId = $(this).find(".product-id").val();
+    const productName = $(this).find('h3').text()
+    window.location.href = `/products/${productName}/${productId}/`;
 
-    $.ajax({
-      url: `/products/detail/get/${productId}/`,
-      method: "GET",
-      success: function (data) {
-        sessionStorage.setItem("productDetail", JSON.stringify(data));
-        window.location.href = `/products/detail/${data.name}/`;
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        alert("Failed to retrieve product details: " + errorThrown);
-      },
-    });
   });
+const $product_id_detail = $("#product-id-detail")
+  if($product_id_detail.length > 0){
+      $.ajax({
+      url: `/products/detail/get/${$product_id_detail.val()}/`,
+      method: "GET",
+      contentType: 'application/json'
+    }).done(function(productDetail){
+      displayProductDetail(productDetail)
+      }).fail(function(){
+        alert('cc')
+    })
+  }
+
   // --- Product Detail Page - Image Change, Data Display ---
   $(".item-thumb").on("click", function (e) {
     e.preventDefault();
     $("#main-image").attr("src", $(this).data("image"));
   });
 
-  const productData = JSON.parse(sessionStorage.getItem("productDetail"));
-  if (productData) {
+  function displayProductDetail(productData){
+    if (productData) {
     $('#main-image').attr('src', productData.images[0]);
     $('#product-name').text(productData.name);
     $('#product-description').text(productData.description);
@@ -388,6 +385,8 @@ if($grid.length > 0){
       `);
     });
   }
+  }
+
 
   // --- product quantity ---
   $("#button-addon1").on("click", function () {
@@ -528,11 +527,14 @@ function displayCartItems(cartItems) {
             <i style="font-size:20px; color: red" class="fa"></i> 
           </div>
         </th>
-        <td class = "align-middle">
-          <div style="display: flex; align-items: center; cursor: pointer" class="item-detail"> 
-          <input type="hidden" value="${item.product_id}">
-            <img src="${item.image}" alt="${item.name}" width="50" class="rounded-3 me-2"> 
-            <p class="m-0 item-name" style="margin-left: 10px!important;">${item.name}</p> 
+        <td class="align-middle">
+          <div class="d-flex align-items-center">
+            <input type="hidden" class="product-id" value="${item.product_id}">
+            <img src="${item.image}" alt="${item.name}" width="50" class="rounded-3 me-2">
+            <p class="m-0
+            
+            
+            ">${item.name}</p>
           </div>
         </td>
         <td class = "align-middle text-center" id="productSize">${item.size}</td>
@@ -553,6 +555,7 @@ function attachDeleteHandlers() {
   $('.delete-button').on('click', function () {
     const $row = $(this).closest('tr');
     const itemId = $row.find('input[type=hidden]').val();
+    // alert(itemId)
     let itemColor = $row.find('#productColor').text().trim();
     const itemSize = $row.find('#productSize').text()
     if (itemColor === '') {
@@ -573,11 +576,9 @@ function attachDeleteHandlers() {
         });
     } else {
       // Remove item from localStorage
-
       let cartItems = JSON.parse(localStorage.getItem("cartItems")) || []; // Fix: Check if cartItems exist
       if (cartItems) { // Only filter if cartItems exist
-        cartItems = cartItems.filter(item => item.id != itemId || item.color != itemColor || item.size != itemSize);
-        // alert(cartItems)
+        cartItems = cartItems.filter(item => item.id !== itemId || item.color !== itemColor || item.size !== itemSize);
          localStorage.setItem("cartItems", JSON.stringify(cartItems));
          $row.remove();
         loadCartItems()
@@ -629,14 +630,33 @@ if($("#order-items").length > 0 || $cartItemTable.length > 0){
   });
 }
 
+function alertAddToCart(){
+   const alertHtml = `<div class="alert alert-success fade show bg-white text-center shadow-sm" role="alert" style="position: fixed; top: 10px; right: 10px; z-index: 1050;">
+                    Added to cart!
+                    
+                </div>`;
+                // Append the alert to the body or a specific container
+                $('body').append(alertHtml);
+                // Automatically remove the alert after 3 seconds
+                setTimeout(() => {
+                    $('.alert').alert('close');
+                }, 3000);
+}
 // add to cart
 $(".add-to-cart").click(async function() {
-  const productDetail = JSON.parse(sessionStorage.getItem('productDetail'));
+
+  const name = $("#product-name").text().trim()
+  let price = $("#product-price").text().trim(); // Get the price text
+   price = price.replace("₫", "");
+   price = price.replace(".", "");
+
+
   const data = {
-    product_id: productDetail.id,
+    product_id: $product_id_detail.val(),
     color: $("#product-color").val(),
     size: $("#product-size").val(),
     quantity: $("#quantity-input").val()
+    // name:
   };
 
   try {
@@ -647,12 +667,12 @@ $(".add-to-cart").click(async function() {
       await $.ajax({ // Use await for the AJAX call
         url: `/addToCart/${localStorage.getItem('client')}/`,
         method: "POST",
-        data: data,
+        data: JSON.stringify(data),
+        contentType:'application/json',
          headers: {
         "X-CSRFToken": "{{ csrf_token }}" }
       });
-
-      alert('Added to cart!');
+      alertAddToCart()
     } else {
       // Client is not logged in
       let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -666,7 +686,7 @@ $(".add-to-cart").click(async function() {
       resizedSrc = await resizeImage(imgSrc, 100, 100);
 
       const existingItem = cartItems.find(item =>
-        item.product_id === data.product_id &&
+        item.id === data.product_id &&
         item.color === data.color &&
         item.size === data.size
       );
@@ -675,18 +695,18 @@ $(".add-to-cart").click(async function() {
         existingItem.quantity += parseInt(data.quantity);
       } else {
         cartItems.push({
-          product_id: data.product_id,
+          id: data.product_id,
           color: data.color,
           size: data.size,
           quantity: parseInt(data.quantity),
           image: resizedSrc,
-          name: productDetail.name,
-          price: productDetail.price
+          name: name,
+          price: price
         });
       }
 
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
-      alert('Added to cart!');
+      alertAddToCart()
     }
   } catch (error) {
     console.error("Error adding to cart:", error);
@@ -923,6 +943,13 @@ function filterProducts(products) {
     return filteredProducts;
 }
 $('.reset-products').click(function(){
+  $('.category-filter').val(''); // Category
+  $('.subcategory-filter').val(''); // Subcategory
+  $('.size-filter').val(''); // Size
+  $('.color-filter').val(''); // Color
+  $('#price-slider').val(''); // Price
+  $('#product-name').val(''); // Product Name
+
   const $grid = $('.product-grid')
   $grid.empty()
   displayProducts(list_products, $grid)
@@ -1176,6 +1203,58 @@ function filterMyOrders(orders) {
     }
 
     return filtered_my_orders;}
+
+  // order detail
+   let order_id;
+   $my_orders.on('click', 'tr', function() {
+          order_id = $(this).find('td:first').text().trim(); // Get order id
+          window.location.href = `/myOrders/detail/${order_id}`; // Navigate to detail page
+      });
+    const $orderId = $('#order-id')// Get order ID from context
+    if($orderId.length > 0){
+          $.ajax({
+          url: `/myOrders/detail/get/${$orderId.val()}/`, // API endpoint
+          type: 'GET',
+          contentType: 'application/json',
+      }).done(function(data) {
+           $("#myOrderId").append('<p>order # ' + $orderId.val() + '</p>');
+           $(".receiver-info").append('<p>'+data.receiver_name+'</br>'+ data.receiver_phone+'</p>')
+            $(".order-address").append(data.detail+' ' +
+                                        data.ward+',<br>\n' +
+                                        data.district+', ' +
+                                        data.province)
+            $('.order-payment-method').append(data.payment_method)
+            $(".order-date").append(data.created_at.slice(0, 10)+' '+ data.created_at.slice(11, 19))
+            let i = 1
+           data.orderItems.forEach(item => {
+             console.log(item)
+            $("#my-order-items").append(`
+              <tr>
+                <td class="align-middle">${i}</td>
+                <td class="">
+                  <div class="d-flex text-center"> 
+                    <p class="m-0 item-name"><strong>${item.name} </strong></p> 
+                  </div>
+                  <p class="text-muted mb-0 mt-1">size: ${item.Size} 
+                     ${item.Color === null ? ' ':(item.Color && `; color: ${item.Color} `)}
+                   </p>
+                  
+                </td>
+                <td class="text-center align-middle">${item.quantity}</td>
+                <td class="text-end align-middle">${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</td>
+              </tr>
+            `);
+             i++
+          });
+          $(".sub-total").append(Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data.sub_total))
+          $(".shipping-charge").append(Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data.shipping_charge))
+          $(".total").append(Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data.total))
+
+        }).fail(function(data) {
+            console.log('cc');
+        })
+}
+
 });
 
 // --- Tab Switching Function (Outside document.ready) ---

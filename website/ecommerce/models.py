@@ -8,6 +8,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
+from django.utils import timezone
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -87,6 +88,26 @@ class MyOrder:
     district: str
     province: str
     total: Decimal
+
+@dataclass
+class myOrderDetail:
+    order_id: int
+    user_name: str
+    receiver_name: str
+    receiver_phone: str
+    created_at : datetime
+    detail: str
+    ward: str
+    district: str
+    province: str
+    total: Decimal
+    sub_total: Decimal
+    shipping_charge: Decimal
+    orderItems: list
+    payment_method: str
+
+
+
 class OrderDetails(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -98,13 +119,12 @@ class OrderDetails(models.Model):
     receiver_name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     receiver_phone = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     detail = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:
         managed = False
         db_table = 'Order_Details'
-
 
     def get_my_order(self)->MyOrder:
         user_name = self.user.last_name +' ' +self.user.first_name
@@ -126,6 +146,14 @@ def get_orders_by_user_id(user_id):
     orders = OrderDetails.objects.filter(user_id=user_id)
     return [order.get_my_order() for order in orders]
 
+@dataclass
+class MyOrderItem:
+    name: str
+    quantity: int
+    price: Decimal
+    Color: str
+    Size: str
+
 class OrderItem(models.Model):
     order = models.ForeignKey(OrderDetails, models.DO_NOTHING, blank=True, null=True)
     product = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
@@ -137,6 +165,42 @@ class OrderItem(models.Model):
     class Meta:
         managed = False
         db_table = 'Order_Item'
+
+    def get_order_item(self) -> MyOrderItem:
+        return OrderItem(
+            name=self.name,
+            quantity=self.quantity,
+            price=self.price,
+            Color=self.Color,
+            Size=self.Size
+        )
+
+def get_order_details_by_order_id(order_id):
+    """Retrieves details for a specific order ID."""
+    order = OrderDetails.objects.get(id=order_id)
+    order_items = OrderItem.objects.filter(order_id=order_id)
+    try:
+        payment_detail_obj = PaymentDetails.objects.get(order=order)  # Use PaymentDetails model
+        payment_method = payment_detail_obj.payment_method.name
+    except PaymentDetails.DoesNotExist:
+        payment_method = None
+
+    return myOrderDetail(
+        order_id=order.id,
+        user_name=order.user.last_name + ' ' + order.user.first_name,  # Assuming 'user' is a related field
+        receiver_name=order.receiver_name,
+        receiver_phone=order.receiver_phone,
+        created_at=order.created_at,
+        detail=order.detail,
+        ward=order.ward,
+        district=order.district,
+        province=order.province,
+        total=order.total,
+        orderItems=[item.get_order_item() for item in order_items],
+        payment_method=payment_method,
+        sub_total=order.sub_total,
+        shipping_charge=order.shipping_charge
+    )
 
 
 class PaymentDetails(models.Model):
@@ -154,7 +218,7 @@ class PaymentDetails(models.Model):
 class PaymentMethods(models.Model):
     name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     description = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -225,7 +289,7 @@ class Products(models.Model):
     description = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
     summary = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     sub_category = models.ForeignKey('SubCategories', models.DO_NOTHING, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:
@@ -287,7 +351,7 @@ class ProductsSkus(models.Model):
     sku = models.CharField(primary_key=True, max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS')
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         managed = False
         db_table = 'Products_SKUs'
@@ -324,7 +388,7 @@ class SubCategories(models.Model):
     parent = models.ForeignKey(Categories, models.DO_NOTHING, blank=True, null=True)
     name = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     description = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
@@ -338,7 +402,8 @@ class Users(models.Model):
     password = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     birth_of_date = models.DateField(blank=True, null=True)
     phone_number = models.CharField(unique=True, max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
 
     class Meta:
         managed = True
@@ -347,6 +412,15 @@ class Users(models.Model):
         if self.password == password:
             return True
         return False
+
+    def update_profile(self, first_name, last_name, email, birth_date, phone_number, gender):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.birth_of_date = birth_date
+        self.phone_number = phone_number
+        self.gender = gender
+        self.save()
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150, db_collation='SQL_Latin1_General_CP1_CI_AS')
