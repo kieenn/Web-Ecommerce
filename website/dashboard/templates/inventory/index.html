@@ -18,7 +18,7 @@
                 <input type="text" class="form-control" id="sku-name" placeholder="Search">
             </div>
         </div>
-        <button class="btn btn-primary">ADD</button>
+        <button class="btn btn-primary add-sku" data-bs-toggle="modal" data-bs-target="#add-sku">ADD</button>
     </div>
 </div>
 <div class="row">
@@ -33,6 +33,7 @@
                 <tr>
                   <th scope="col" data-label="Product"  class="text-center" >Product ID</th>
                   <th scope="col" class="text-center" data-label="Item">Item</th>
+                    <th scope="col" class="text-center" data-label="Name">Name</th>
                   <th scope="col" class="text-center" data-label="Sku">Sku</th>
                   <th scope="col" class="text-center" data-label="Price">Price</th>
                     <th scope="col" class="text-center" data-label="Quantity">Quantity</th>
@@ -47,4 +48,108 @@
             </div>
               </div>
   </div>
+
+    <div class="modal fade" id="add-sku" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new sku</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+             <div class="mb-3">
+            <label for="product" class="col-form-label">Product:</label>
+                <select name="" id="product-info" class="form-control">
+                </select>
+          </div>
+          <div class="mb-3">
+            <label for="product-name" class="col-form-label">Sku:</label>
+            <input type="text" class="form-control" id="product-sku">
+             <div class="productSku-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="sku-quantity" class="col-form-label">Quantity:</label>
+                 <input type="number" class="form-control" id="sku-quantity">
+              <div class="summary-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="price" class="col-form-label">Price:</label>
+                 <input type="text" class="form-control" id="sku-price">
+          </div>
+           <div class="mb-3">
+            <label for="color" class="col-form-label">Color:</label>
+                 <input type="text" class="form-control" id="sku-color">
+          </div>
+            <div class="mb-3">
+            <label for="size" class="col-form-label">Size:</label>
+                <select name="" id="sku-size" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-add-sku">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <div class="modal fade" id="update-sku" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new sku</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+             <div class="mb-3">
+            <label for="product" class="col-form-label">Product:</label>
+                <select name="" id="update-product-info" class="form-control">
+                </select>
+          </div>
+          <div class="mb-3">
+            <label for="product-name" class="col-form-label">Sku:</label>
+            <input type="text" class="form-control" id="update-product-sku">
+             <div class="productSku-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="sku-quantity" class="col-form-label">Quantity:</label>
+                 <input type="number" class="form-control" id="update-sku-quantity">
+              <div class="summary-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="price" class="col-form-label">Price:</label>
+                 <input type="text" class="form-control" id="update-sku-price">
+          </div>
+           <div class="mb-3">
+            <label for="color" class="col-form-label">Color:</label>
+                 <input type="text" class="form-control" id="update-sku-color">
+          </div>
+            <div class="mb-3">
+            <label for="size" class="col-form-label">Size:</label>
+                <select name="" id="update-sku-size" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-update-sku">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

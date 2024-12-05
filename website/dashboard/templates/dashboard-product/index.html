@@ -26,7 +26,7 @@
                 <input type="text" class="form-control" id="dashboard-products-name" placeholder="Search">
             </div>
         </div>
-        <button class="btn btn-primary">ADD</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-product">ADD</button>
     </div>
 </div>
 <div class="row">
@@ -40,10 +40,12 @@
               <thead>
                 <tr>
                   <th scope="col" data-label="Product"  class="text-center" >Product ID</th>
-                  <th scope="col" class="text-center" data-label="Item">Item</th>
+                    <th scope="col" class="text-center" data-label="Item">Item</th>
+                  <th scope="col" class="text-center" data-label="Name">Name</th>
                   <th scope="col" class="text-center" data-label="Category">Category</th>
                   <th scope="col" class="text-center" data-label="sub-category">Sub Category</th>
                     <th scope="col" class="text-center" data-label="Created-at">Created at</th>
+                    <th scope="col" class="text-center" data-label="Status">Status</th>
                      <th scope="col" class="text-center" data-label="Action">Action</th>
                 </tr>
               </thead>
@@ -54,4 +56,203 @@
             </div>
               </div>
   </div>
+
+<div class="modal fade" id="add-product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="product-name" class="col-form-label">Product name:</label>
+            <input type="text" class="form-control" id="product-name">
+             <div class="productName-message"></div>
+          </div>
+            <div class="mb-3">
+            <label for="product-category" class="col-form-label">Category:</label>
+            <select class="form-control product-category">
+                <option value="">Select Category</option>
+                <option value="add">Add Category</option>
+                 </select>
+             <div class="category-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="product-subCategory" class="col-form-label">Sub Category:</label>
+                 <select class="form-control" id="product-subCategory">
+                <option value="">Select Sub Category</option>
+                <option value="add">Add Sub Category</option>
+                 </select>
+
+              <div class="summary-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="product-img" class="col-form-label">Images:</label>
+                 <div class="img-input">
+                      <input type="file" class="form-control mb-1 product-img" >
+                 </div>
+                 <div class="text-end">
+                     <a href="#" id="add-more-img">add more</a>
+                 </div>
+              <div class="summary-message"></div>
+          </div>
+          <div class="mb-3">
+            <label for="product-description" class="col-form-label">Description:</label>
+              <textarea  class="form-control" id="product-description"> </textarea>
+              <div class="description-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="product-summary" class="col-form-label">Summary:</label>
+              <textarea  class="form-control" id="product-summary"> </textarea>
+              <div class="summary-message"></div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-add-product">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="modal fade" id="add-subCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new Sub Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="product-category" class="col-form-label">Category:</label>
+            <select class="form-control product-category">
+                <option value="">Select Category</option>
+                <option value="add">Add Category</option>
+                 </select>
+             <div class="category-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="product-subCategory" class="col-form-label">Sub Category:</label>
+                 <input type="text" class="form-control" id="new-subCategory">
+              <div class="summary-message"></div>
+          </div>
+            <div class="mb-3">
+            <label for="subCategory-description" class="col-form-label">Description:</label>
+                <textarea class="form-control" id="subCategory-description"> </textarea>
+              <div class="subCategory-des-message"></div>
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-add-subcategory">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+     <div class="modal fade" id="add-category" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+             <div class="mb-3">
+            <label for="product-category" class="col-form-label">Category:</label>
+                 <input type="text" class="form-control" id="new-category">
+              <div class="category-message"></div>
+          </div>
+            <div class="mb-3">
+            <label for="Category-description" class="col-form-label">Description:</label>
+                <textarea class="form-control" id="Category-description"> </textarea>
+              <div class="Category-des-message"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-add-category">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="modal fade" id="update-product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="new-product-name" class="col-form-label">Product name:</label>
+            <input type="text" class="form-control" id="new-product-name">
+             <div class="productName-message"></div>
+          </div>
+              <div class="mb-3">
+            <label for="product-category" class="col-form-label">Category:</label>
+            <select class="form-control product-category">
+                <option value="">Select Category</option>
+                <option value="add">Add Category</option>
+                 </select>
+             <div class="category-message"></div>
+             <div class="mb-3">
+            <label for="new-product-subCategory" class="col-form-label">Sub Category:</label>
+                 <select class="form-control" id="new-product-subCategory">
+                <option value="" selected>Select Sub Category</option>
+                <option value="add">Add Sub Category</option>
+                 </select>
+
+              <div class="summary-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="product-img" class="col-form-label">Images:</label>
+                 <div class="new-img-input">
+                     <table class="table table-borderless w-100">
+                      <thead>
+                        <tr>
+                          <th scope="col" class="text-center">Image</th>
+                          <th scope="col" class="text-center">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="old-img">
+                      </tbody>
+                    </table>
+                 </div>
+                 <div class="text-end">
+                     <a href="#" id="add-img">add more</a>
+                 </div>
+              <div class="new-img-message"></div>
+          </div>
+          <div class="mb-3">
+            <label for="new-product-description" class="col-form-label">Description:</label>
+              <textarea  class="form-control" id="new-product-description"> </textarea>
+              <div class="old-description-message"></div>
+          </div>
+             <div class="mb-3">
+            <label for="new-product-summary" class="col-form-label">Summary:</label>
+              <textarea  class="form-control" id="new-product-summary"> </textarea>
+              <div class="summary-message"></div>
+          </div>
+</div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-update-product">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -45,6 +45,9 @@ header {
   padding: 20px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+header .nav-link {
+  display: inline !important;
+}
 
 .search-box {
   width: 40%;
@@ -113,7 +116,7 @@ header {
 }
 
 .price {
-  color: #008000;
+  /*color: #008000;*/
   font-weight: bold;
 }
 

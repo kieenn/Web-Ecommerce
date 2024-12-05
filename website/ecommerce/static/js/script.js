@@ -66,6 +66,7 @@ function addUniqueFilterOptions(filterValues, $selectElement) {
   }
 function addToCart(id){
      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+     console.log(cartItems)
         if (cartItems.length > 0) {
           // Cart has items - Proceed with AJAX request
           $.ajax({
@@ -81,6 +82,21 @@ function addToCart(id){
                 // Handle errors gracefully (e.g., display error message)
           });
         }
+}
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
   $loginForm.submit(function (e) {
     e.preventDefault();
@@ -103,7 +119,7 @@ function addToCart(id){
       data: { phone_number: phoneNumber, password: password },
       dataType: "json",
       headers: {
-        "X-CSRFToken": "{{ csrf_token }}" }, // Assuming you're using Django
+        "X-CSRFToken": getCookie('csrftoken')}, // Assuming you're using Django
     })
       .done(function (response) {
         if (response.status) {
@@ -185,6 +201,7 @@ $registerForm.submit(function(e){
     const phone_number = $("#phone_number").val().trim()
     const password = $("#password").val().trim()
     const password2 = $("#confirm_password").val().trim()
+    const gender = $("#user-gender").val().trim()
     if (!validateRegisterForm(fname, lname, birth_of_date, email, phone_number, password, password2)){
     return;
    }
@@ -194,14 +211,15 @@ $registerForm.submit(function(e){
       birth_of_date:birth_of_date,
       email:email,
       password:password,
-      phone_number:phone_number
+      phone_number:phone_number,
+        gender:gender
     }
     $.ajax({
       url: '/register/post',
       method: 'POST',
       data: data,
       dataType: "json",
-      headers: { "X-CSRFToken": "{{ csrf_token }}" },
+      headers: { "X-CSRFToken":getCookie('csrftoken') },
     }).done(function(response){
       window.location.href='/login'
     }).fail(function(response){
@@ -281,56 +299,61 @@ $registerForm.submit(function(e){
   });
 
   // --- Product Display (Home and Shop) ---
-     const isHomePage = $productGridHome.length > 0;
-    const $grid = isHomePage ? $productGridHome : $productGrid;
-if($grid.length > 0){
-  $.ajax({
-  url: "/products/get",
-  method: "GET",
-  dataType: "json",
-})
-  .done(function (products) {
-    list_products.push(...products);
+ const isHomePage = $productGridHome.length > 0;
+const $grid = isHomePage ? $productGridHome : $productGrid;
+const urlParams = new URLSearchParams(window.location.search);
+const searchQuery = urlParams.get('search');
+if ($grid.length > 0) {
+    let apiUrl = "/products/get"; // Default API URL for all products
 
-    // If homepage, display only 8 products, otherwise display all
-    const productsToDisplay = isHomePage ? products.slice(0, 8) : products;
-    if(!isHomePage){
-        const categories = new Set(products.map(product => product.category));
-    addUniqueFilterOptions(categories, $('.category-filter'));
-     const subcategories = new Set(products.map(product => product.subcategory));
-    addUniqueFilterOptions(subcategories, $('.subcategory-filter'));
-
-   const sizes = new Set(products.map(product => product.attributes.Size).flat());
-    addUniqueFilterOptions(sizes, $('.size-filter'));
-
-     const colors = new Set(products
-      .map(product => product.attributes?.Color) // Optional chaining for safety
-      .flat()
-      .filter(color => color !== undefined) // Filter out undefined values
-    );
-    addUniqueFilterOptions(colors, $('.color-filter'));
-
+    if (searchQuery) {
+        apiUrl = `/products/?search=${searchQuery}`; // Add search query if present
     }
-     const minPrice = Math.min(...products.map(product => product.price));
-    const maxPrice = Math.max(...products.map(product => product.price));
-    $("#price-slider").attr({
-       "max" : maxPrice,
-       "min" : minPrice,
-      "value":minPrice
-    });
-    $(".price-slider").append(`
-        <div id="price-display">Price: <span id="price-value">${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(minPrice)}</span> - ${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(maxPrice)}</div>
-    `);
-    const $result = $('.results')
-    $result.empty()
-    $result.append(`<p class="product-length">Showing all ${products.length} results</p>`)
-    //handle price slider
+    $.ajax({
+        url: apiUrl, // Use correct API
+        method: "GET",
+        dataType: "json",
+    }).done(function(products) {
 
-    displayProducts(productsToDisplay, $grid);
-  })
-  .fail(function (jqXHR, textStatus, errorThrown) {
-    alert("Failed to retrieve products: " + errorThrown);
-  });
+        list_products.push(...products);
+
+
+        const productsToDisplay = isHomePage ? products.slice(0, 8) : products;
+
+        if (!isHomePage && !searchQuery) {  // Only add filters if NOT homepage AND NOT a search
+            const categories = new Set(products.map(product => product.category));
+            addUniqueFilterOptions(categories, $('.category-filter'));
+            const subcategories = new Set(products.map(product => product.subcategory));
+            addUniqueFilterOptions(subcategories, $('.subcategory-filter'));
+            const sizes = new Set(products.map(product => product.attributes.Size).flat());
+            addUniqueFilterOptions(sizes, $('.size-filter'));
+            const colors = new Set(products.map(product => product.attributes?.Color).flat().filter(color => color !== undefined));
+            addUniqueFilterOptions(colors, $('.color-filter'));
+        }
+
+
+
+        // Set min/max price for the slider regardless of search or homepage
+        const minPrice = Math.min(...products.map(product => product.price));
+        const maxPrice = Math.max(...products.map(product => product.price));
+
+        $("#price-slider").attr({
+            "max": maxPrice,
+            "min": minPrice,
+            "value": minPrice
+        });
+        $(".price-slider").append(`<div id="price-display">Price: <span id="price-value">${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(minPrice)}</span> - ${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(maxPrice)}</div>`);
+
+
+        $('.results').empty().append(`<p class="product-length">Showing ${products.length} results</p>`);
+
+
+        displayProducts(productsToDisplay, $grid);
+
+
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        alert("Failed to retrieve products: " + errorThrown);
+    });
 }
   // --- Product Detail Page ---
   ($productGridHome.add($productGrid)).on("click", ".product", function (e) {
@@ -652,7 +675,7 @@ $(".add-to-cart").click(async function() {
 
 
   const data = {
-    product_id: $product_id_detail.val(),
+    id: $product_id_detail.val(),
     color: $("#product-color").val(),
     size: $("#product-size").val(),
     quantity: $("#quantity-input").val()
@@ -695,7 +718,7 @@ $(".add-to-cart").click(async function() {
         existingItem.quantity += parseInt(data.quantity);
       } else {
         cartItems.push({
-          id: data.product_id,
+          id: data.id,
           color: data.color,
           size: data.size,
           quantity: parseInt(data.quantity),
@@ -955,38 +978,17 @@ $('.reset-products').click(function(){
   displayProducts(list_products, $grid)
 })
 
-//handle personal info
-const $personalInfo = $("#personal-info")
-if ($personalInfo.length > 0) {
-  const accessToken = localStorage.getItem('accessToken');
 
-  console.log('accessToken:', accessToken); // Add console logging to check
-
-    $.ajax({
-      url: `/profile/get/${localStorage.getItem('client')}`,
-      method: "GET",
-    })
-    .done(function(response) {
-      $("#first-name").val(response.first_name)
-      $("#last-name").val(response.last_name)
-      $('#user-birth-day').val(response.birth_of_date)
-      $('#user-phone').val(response.phone_number)
-      $('#user-email').val(response.email)
-    })
-    .fail(function(response) {
-      console.error('AJAX Error:', response); // Add error logging
-      alert('qq');
-    });
-}
 function isValidateChangePasswordForm(oldPassword, newPassword, confirmPassword){
   let isValid = true;
-      if(oldPassword.length < 7){
+      if(oldPassword.length < 6){
         $(".old-password-message").html('<p style="color: red" >Password must have at least 6 characters long.</p>');
       isValid = false;
     } else {
       $(".old-password-message").empty();
     }
-      if(newPassword.length < 7){
+      if(newPassword.length < 6){
+          alert(newPassword.length  + newPassword)
         $(".new-password-message").html('<p style="color: red" >Password must have at least 6 characters long.</p>');
       isValid = false;
     } else if(newPassword === oldPassword) {
@@ -1020,6 +1022,9 @@ $("#btn-change-password").click(function() {
       contentType: 'application/json'
     }).done(function (response) {
       alert(response.message)
+         $("#old-password").val('')
+        $("#new-password").val('')
+         $("#confirm-password").val('')
     }).fail(function (Status) {
       if (Status.status === 400) {
         alert('Failed: Incorrect old password')
@@ -1071,7 +1076,6 @@ function isValidateFormFGP2(newPassword, confirmPassword){
 }
 $("#btn-check").click(function(){
    const phone = $('#phone-number-fgp').val().trim()
-  alert(phone)
   const email =$("#email-fgp").val().trim()
   let data = {
     phone_number: phone,
@@ -1139,6 +1143,24 @@ $("#btn-update-password").click(function (){
 function displayOrders(orders, $grid){
          $grid.empty();
     orders.forEach(order => {
+         let statusText = ''; // Initialize statusText
+
+        switch (order.status) {
+            case 0:
+                statusText = 'Processing';
+                break;
+            case 1:
+                statusText = 'Shipping';
+                break;
+            case 2:
+                statusText = 'Succeed';
+                break;
+            case 3:
+                statusText = 'Canceled';
+                break;
+            default:
+                statusText = 'Unknown';
+        }
         $grid.append(`
           <tr>
             <td scope="row" class="-button align-middle text-center">
@@ -1155,7 +1177,7 @@ function displayOrders(orders, $grid){
             </td>
             <td class="align-middle text-center">${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total)}</td>
             <td class="align-middle text-center">
-                Processing
+                ${statusText}
             </td>
           </tr>   
         `);
@@ -1254,6 +1276,134 @@ function filterMyOrders(orders) {
             console.log('cc');
         })
 }
+ $('.search-box').on('input', function() {
+             const query = $(this).val().toLowerCase();
+             if (query) {
+                  $('.product-results').show();
+                  $.ajax({
+                    url: `/products/?search=${query}`, // API endpoint for searching products
+                    type: 'GET',
+                    contentType: 'application/json',
+                  }).done(function(data) {
+                    // Display the filtered results in a table
+                    $('.product-results').empty();
+                    if (data.length > 0) {
+                      let table = '<table class="table table-borderless table-hover "><thead><tr><th>Product Name</th><th>Price</th></tr></thead><tbody>';
+                      data.forEach(product => {
+                        table += `<tr><td>${product.name}</td>
+                                   <td>${Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</td>
+                                   </tr>`;
+                      });
+                      table += '</tbody></table>';
+                      $('.product-results').append(table);
+                    } else {
+                      $('.product-results').append('<div>No products found</div>');
+                    }
+                  }).fail(function() {
+                    $('.product-results').append('<div>Error retrieving products</div>');
+                  });
+                } else {
+                  $('.product-results').hide();
+                }
+              }).on('blur', function() {
+                  $('.product-results').hide(); // Hide product results when not on input
+              }).on('keydown', function(e) {  // Listen for Enter key
+                if (e.which === 13) { // 13 is the key code for Enter
+                    const query = $(this).val().toLowerCase();
+                    if (query) {
+                        window.location.href = `/shop/?search=${query}`;
+                    }}
+});
+//handle profile
+let originalData = {}; // Store original data
+
+    const userId = localStorage.getItem('client');
+
+    // Fetch initial data and populate the form
+    if (userId) { // Check if userId exists
+        $.ajax({
+            url: `/profile/get/${userId}`,
+            method: "GET",
+            dataType: "json"
+        }).done(function(response) {
+            originalData = response; // Store original data
+            populateForm(response);
+        }).fail(function(error) {
+            console.error('AJAX Error:', error);
+            alert('Failed to retrieve profile data.');
+        });
+    } else {
+        console.error("User ID not found in localStorage.");
+        // Handle the case where the user ID is missing (e.g., redirect to login)
+    }
+    $(".profile-update").click(function() {
+        const userId = localStorage.getItem('client'); // Retrieve user ID
+        if (!userId) { //Check for missing userId
+            console.error("User ID not found in localStorage.");
+            return; // Stop execution if userId is missing
+        }
+
+
+        // Gather updated data from the form
+        const updatedData = {
+            first_name: $("#first-name").val(),
+            last_name: $("#last-name").val(),
+            gender: $("#user-gender").val(),
+            birth_of_date: $("#user-birth-day").val(), // Use birthday key
+            phone_number: $("#user-phone").val(),
+            email: $("#user-email").val(),
+        };
+
+        // Check if any fields have changed using JSON.stringify
+        const hasChanges = haveDataChanges(originalData, updatedData)
+        if (hasChanges) {
+            $.ajax({
+               url: `/profile/update/${userId}`,
+                method: 'PUT',
+               contentType: 'application/json',  // Crucial: Set content type to JSON
+                 data: JSON.stringify(updatedData),
+                headers: {
+                "X-CSRFToken": getCookie('csrftoken')}, // Assuming you're using Django
+            }).done(function(response) {
+                alert('Profile updated successfully!');
+                originalData = updatedData; // Update original data
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert('Failed to update profile: ' + errorThrown);
+                console.error(jqXHR, textStatus, errorThrown);
+            });
+        } else {
+            alert("No changes made");
+        }
+});
+
+function haveDataChanges(originalData, updatedData){
+    for (const key in updatedData) {
+
+        if (originalData.hasOwnProperty(key)) { //Check if property exists on original object
+            if (typeof updatedData[key] === 'object' && updatedData[key] !== null){ //Check if the property value is an object
+
+                if (JSON.stringify(updatedData[key]) !== JSON.stringify(originalData[key])){ //Deep compare if the value is nested object
+                    return true;
+                }
+
+            }else if (updatedData[key] !== originalData[key]) {
+                return true;
+            }
+
+
+        }
+
+    }
+    return false;
+}
+function populateForm(data) {
+    $('#first-name').val(data.first_name);
+    $("#last-name").val(data.last_name);
+    $("#user-gender").val(data.gender);
+    $('#user-birth-day').val(data.birth_of_date); // Use consistent key from the API response
+    $('#user-phone').val(data.phone_number);
+    $('#user-email').val(data.email);
+}
 
 });
 
@@ -1262,6 +1412,6 @@ function activateTab(tabName) {
   $('.tab-pane').removeClass('show active');
   $(`#${tabName}`).addClass('show active');
 
-  $('.btn').css({ 'background-color': '', 'border': 'none' }); // Reset all
-  $(`#ex1-tab-${tabName === 'description' ? '1' : '2'}`).css({ 'background-color': '#0d6efd', 'border': 'none' });
+  $('.change').css({ 'background-color': '', 'border': 'none',  'color':'#333' }); // Reset all
+  $(`#ex1-tab-${tabName === 'description' ? '1' : '2'}`).css({ 'background-color': '#0d6efd', 'border': 'none', 'color':'#fff'});
 }

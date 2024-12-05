@@ -88,6 +88,7 @@ class MyOrder:
     district: str
     province: str
     total: Decimal
+    status: int
 
 @dataclass
 class myOrderDetail:
@@ -108,6 +109,7 @@ class myOrderDetail:
 
 
 
+
 class OrderDetails(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -120,6 +122,7 @@ class OrderDetails(models.Model):
     receiver_phone = models.CharField(max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     detail = models.TextField(db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)  # This field type is a guess.
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(blank=True, null=True, default=0)
 
 
     class Meta:
@@ -139,6 +142,7 @@ class OrderDetails(models.Model):
             district=self.district,
             province=self.province,
             total=self.total,
+            status=self.status,
         )
 
 def get_orders_by_user_id(user_id):
@@ -290,6 +294,7 @@ class Products(models.Model):
     summary = models.CharField(max_length=255, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     sub_category = models.ForeignKey('SubCategories', models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(blank=True, null=True)
 
 
     class Meta:
@@ -403,8 +408,7 @@ class Users(models.Model):
     birth_of_date = models.DateField(blank=True, null=True)
     phone_number = models.CharField(unique=True, max_length=20, db_collation='SQL_Latin1_General_CP1_CI_AS', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
-
+    gender = models.CharField(max_length=10)
     class Meta:
         managed = True
         db_table = 'Users'

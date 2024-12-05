@@ -53,10 +53,15 @@
           class="navbar navbar-expand-lg navbar-dark"
           style="background-color: #333 !important"
         >
-          <a class="navbar-brand" href="/"
+          <a class="navbar-brand h1" href="/"
             ><strong>Kiien's Store</strong></a
           >
-          <input class="search-box" type="text" placeholder="search" />
+          <div class="search-container w-50 me-3 pb-2 position-relative">
+            <input class="search-box" type="text" placeholder="search" style="width: 100%;" />
+            <div class="product-results position-absolute w-100 bg-white border rounded-2" style="z-index: 1000; display: none;">
+              <!-- Product results will be shown here based on input -->
+            </div>
+          </div>
           <button
             class="navbar-toggler"
             type="button"
@@ -68,24 +73,61 @@
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="mainNav">
+{#          <script>#}
+{#            $(document).ready(function() {#}
+{#              $('.search-box').on('input', function() {#}
+{#                var query = $(this).val().toLowerCase();#}
+{#                if (query) {#}
+{#                  $('.product-results').show();#}
+{#                  // Example data to simulate product results#}
+{#                  const exampleProducts = [#}
+{#                    { name: "Product 1", price: "$10" },#}
+{#                    { name: "Product 2", price: "$15" },#}
+{#                    { name: "Product 3", price: "$20" }#}
+{#                  ];#}
+{#                  #}
+{#                  // Filter and show the relevant products based on the input#}
+{#                  const filteredProducts = exampleProducts.filter(product => #}
+{#                    product.name.toLowerCase().includes(query)#}
+{#                  );#}
+{##}
+{#                  // Display the filtered results in a table#}
+{#                  $('.product-results').empty();#}
+{#                  if (filteredProducts.length > 0) {#}
+{#                    let table = '<table class="table"><thead><tr><th>Product Name</th><th>Price</th></tr></thead><tbody>';#}
+{#                    filteredProducts.forEach(product => {#}
+{#                      table += `<tr><td>${product.name}</td><td>${product.price}</td></tr>`;#}
+{#                    });#}
+{#                    table += '</tbody></table>';#}
+{#                    $('.product-results').append(table);#}
+{#                  } else {#}
+{#                    $('.product-results').append('<div>No products found</div>');#}
+{#                  }#}
+{#                } else {#}
+{#                  $('.product-results').hide();#}
+{#                }#}
+{#              });#}
+{#            });#}
+{#            </script>#}
+          <div class="collapse navbar-collapse pb-2" id="mainNav">
             <ul class="navbar-nav ms-auto">
               <li class="nav-item {% block home %} {% endblock %}">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/" style="font-size: 1.5rem;">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/shop"> Shop </a>
+                <a class="nav-link" href="/shop" style="font-size: 1.5rem;"> Shop </a>
               </li>
-              <li class="nav-item {% block cart %} {% endblock %}"></li>
-                <a class="nav-link cart-link" href="/cart/">
+              <li class="nav-item {% block cart %} {% endblock %}">
+                <a class="nav-link cart-link" href="/cart/" style="font-size: 1.5rem;">
                   <i class="fa fa-shopping-cart" style="font-size: 24px"></i>
                   <span class="badge bg-warning text-dark"></span></a
                 >
+              </li>
               <li class="nav-item {% block about %} {% endblock %}">
-                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="/about" style="font-size: 1.5rem;">About</a>
               </li>
               <li class="nav-item {% block contact %} {% endblock %}">
-                <a class="nav-link" href="/contact">Contact</a>
+                <a class="nav-link" href="/contact" style="font-size: 1.5rem;">Contact</a>
               </li>
               {% if request.session.user %}
              <li class="nav-item dropdown" id="accountDropdownContainer">
@@ -97,6 +139,7 @@
     data-bs-toggle="dropdown"
     aria-haspopup="true"
     aria-expanded="false"
+    style="font-size: 1.5rem;"
   >
     <i class="fa fa-user" style="font-size: 24px"></i>
   </a>
@@ -126,7 +169,7 @@
                   </script>
               </li>
               <li class="nav-item {% block login %} {% endblock %}" id="loginItem">
-                <a class="nav-link" href="/login/">Login</a>
+                <a class="nav-link" href="/login/" style="font-size: 1.5rem;">Login</a>
               </li>
             {% endif %}
             </ul>
@@ -135,6 +178,8 @@
       </div>
     </header>
     {% block content %} {% endblock %}
-
+<footer>
+    <p>© Copyright by Kiien</p>
+</footer>
   </body>
 </html>

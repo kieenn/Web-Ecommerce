@@ -18,7 +18,6 @@
                 <input type="text" class="form-control" id="order-input" placeholder="Search">
             </div>
         </div>
-        <button class="btn btn-primary">ADD</button>
     </div>
 </div>
 <div class="row">
@@ -39,6 +38,7 @@
                     <th scope="col" class="text-center" data-label="Receiver-phone">Receiver Phone</th>
                      <th scope="col" class="text-center" data-label="Address">Address</th>
                      <th scope="col" class="text-center" data-label="Total">Total</th>
+                     <th scope="col" class="text-center" data-label="status">Status</th>
                      <th scope="col" class="text-center" data-label="Action">Action</th>
 
                 </tr>
@@ -50,4 +50,49 @@
             </div>
               </div>
   </div>
+
+<div class="modal fade" id="edit-order" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editOrderModalLabel">Edit Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-order-form">
+          <div class="mb-3">
+            <label for="receiver-name" class="form-label">Receiver Name</label>
+            <input type="text" class="form-control" id="receiver-name">
+          </div>
+          <div class="mb-3">
+            <label for="receiver-phone" class="form-label">Receiver Phone</label>
+            <input type="text" class="form-control" id="receiver-phone">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <div class="row g-2">
+              <div class="col">
+                <select class="form-select" id="province-option">
+                  <option value="">Select Province</option>
+                </select>
+              </div>
+              <div class="col">
+                <select class="form-select" id="district-option">
+                  <option value="">Select District</option>
+                </select>
+              </div>
+              <div class="col">
+                <select class="form-select" id="ward-option">
+                  <option value="">Select Ward</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-2 address-message text-danger"></div> </div>
+          <div class="mb-3">
+            <label for="address-detail" class="form-label">Address Detail</label>
+            <textarea class="form-control" id="address-detail" rows="3" placeholder="Street address, apartment number, etc."></textarea>
+            <div class="detail-message mt-2 text-danger"></div> </div> </form> </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="edit-order-info">Update</button> </div> </div> </div> </div>
 {% endblock %}

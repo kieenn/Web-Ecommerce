@@ -1,32 +1,39 @@
     {% extends '../base/base.html' %}
 {% block title %}
-Contact
+    About Us
 {% endblock %}
 {% block about %} active {% endblock %}
 
 {% block content %}
     {% load static %}
-  <div class="about py-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 order-md-2">
-                        <img src="{% static 'images/103.webp' %}" alt="About Us" class="img-fluid about-img rounded">
-                    </div>
-                    <div class="col-md-6 order-md-1">
-                        <h1 class="display-4 font-weight-bold mb-4">Our Story</h1>
-                        <p class="lead mb-4">
-                            Kiien's, established in 2024, is an emerging force in the online fashion retail landscape. We aim to curate a unique and stylish collection for the modern individual, prioritizing quality and individuality.
-                        </p>
-                        <p class="mb-4">
-                      <strong>We believe in:</strong> 
+    <div class="about py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 order-md-2 mb-4">
+                    <img src="{% static 'images/103.webp' %}" alt="About Us" class="img-fluid about-img">
+                </div>
+                <div class="col-md-6 order-md-1">
+                    <h1 class="display-4 fw-bold mb-4 text-primary text-center">About Our Store</h1>
+                    <p class="lead mb-4 text-muted text-center">
+                        Welcome to Kiien's! Established in 2024, we are an emerging force in the online fashion retail sector, offering a unique and stylish collection tailored for modern individuals. Our commitment to quality and uniqueness sets us apart.
                     </p>
-                    <ul class="list-group list-group-flush mb-4">
-                      <li class="list-group-item">Offering a carefully curated selection of on-trend pieces, reflecting a strong sense of style and personality.</li>
-                      <li class="list-group-item">Prioritizing customer satisfaction through excellent service and a seamless shopping experience.</li> 
-                         <li class="list-group-item">Creating a space where fashion is accessible and self-expression is celebrated.</li> 
+                    <h2 class="text-dark text-center mb-3">Our Mission</h2>
+                    <ul class="list-unstyled mb-4 text-start">
+                        <li class="d-flex align-items-center mb-2">
+                            <span class="text-primary me-2">✔</span>
+                            To provide a diverse collection of fashion products that reflect unique styles and personalities.
+                        </li>
+                        <li class="d-flex align-items-center mb-2">
+                            <span class="text-primary me-2">✔</span>
+                            To ensure customer satisfaction through excellent service and a seamless shopping experience.
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <span class="text-primary me-2">✔</span>
+                            To create an environment where fashion is accessible and self-expression is celebrated.
+                        </li>
                     </ul>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
 {% endblock %}

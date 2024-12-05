@@ -4,71 +4,77 @@ Register
 {% endblock %}
 {% block login %} active {% endblock %}
 {% block content %}
-   <section class="vh-100">
-  <div class="container-fluid h-custom">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-md-9 col-lg-6 col-xl-5">
-        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-          class="img-fluid" alt="Sample image">
-      </div>
-      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1"  style="text-align: center">
-          <h1>Register</h1>
-        <form method="post" id="register-form">
-          <div class="divider d-flex align-items-center my-4">
-          </div>
-            {% csrf_token %}
-          <!-- fname input -->
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="text" id="fname" class="form-control form-control-lg"
-              placeholder="First Name" />
-              <div class="fname-mess"></div>
-          </div>
-           <!-- lname input -->
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="text" id="lname" class="form-control form-control-lg"
-              placeholder="Last Name" />
-              <div class="lname-mess"></div>
-          </div>
-          <!-- date of birth input -->
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="date" id="birth_of_date" class="form-control form-control-lg"
-              placeholder="First Name" />
-              <div class="bod-mess"></div>
-          </div>
-          <!-- Email input -->
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="email" id="email" class="form-control form-control-lg"
-              placeholder="Email" />
-              <div class="email-mess"></div>
-          </div>
-          <!-- phone number input -->
-          <div data-mdb-input-init class="form-outline mb-4">
-            <input type="text" id="phone_number" class="form-control form-control-lg"
-              placeholder="Phone number" />
-              <div class="phone-mess"></div>
-          </div>
-          <!-- Password input -->
-          <div data-mdb-input-init class="form-outline mb-3">
-            <input type="password" id="password" class="form-control form-control-lg"
-              placeholder="Enter password" />
-              <div class="pass-mess"></div>
-          </div>
-          <!-- confirm Password input -->
-          <div data-mdb-input-init class="form-outline mb-3">
-            <input type="password" id="confirm_password" class="form-control form-control-lg"
-              placeholder="Enter password again" />
-              <div class="pass2-mess"></div>
-          </div>
-          <div class="text-center text-lg-start mt-4 pt-2" style="text-align: center !important;">
-            <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
-              style="padding-left: 2.5rem; padding-right: 2.5rem; width: 100%;">Register</button>
-              <p class="small fw-bold mt-2 pt-1 mb-0">I already have an account <a href="/login"
-                class="link-danger">Log in</a></p>
-          </div>
 
-        </form>
-      </div>
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card rounded-5 border-0 shadow-lg">
+              <div class="card-body p-5">
+                <h2 class="text-center mb-5">Register</h2>
+                <form method="post" id="register-form">
+                  <div class="divider d-flex align-items-center my-4">
+                  </div>
+                  {% csrf_token %}
+                  <!-- First Name input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="fname" class="form-control form-control-lg"
+                      placeholder="First Name" required />
+                    <div class="fname-mess"></div>
+                  </div>
+                  <!-- Last Name input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="lname" class="form-control form-control-lg"
+                      placeholder="Last Name" required />
+                    <div class="lname-mess"></div>
+                  </div>
+                  <!-- Gender input -->
+                  <div class="form-outline mb-4">
+                    <select class="form-control form-control-lg" id="user-gender">
+                        <option value="">Select Gender</option>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                    </select>
+                    <div class="gender-mess"></div>
+                  </div>
+                  <!-- Date of Birth input -->
+                  <div class="form-outline mb-4">
+                    <input type="date" id="birth_of_date" class="form-control form-control-lg"
+                      required />
+                    <div class="bod-mess"></div>
+                  </div>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="email" class="form-control form-control-lg"
+                      placeholder="Email" required />
+                    <div class="email-mess"></div>
+                  </div>
+                  <!-- Phone Number input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="phone_number" class="form-control form-control-lg"
+                      placeholder="Phone Number" required />
+                    <div class="phone-mess"></div>
+                  </div>
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="password" class="form-control form-control-lg"
+                      placeholder="Enter Password" required />
+                    <div class="pass-mess"></div>
+                  </div>
+                  <!-- Confirm Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="confirm_password" class="form-control form-control-lg"
+                      placeholder="Confirm Password" required />
+                    <div class="pass2-mess"></div>
+                  </div>
+                  <div class="text-center mt-4 pt-2">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Register</button>
+                    <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/login"
+                      class="link-danger">Log in</a></p>
+                  </div>
+                </form>
+              </div>
+            </div>
+        </div>
     </div>
   </div>
-</section>
 {% endblock %}

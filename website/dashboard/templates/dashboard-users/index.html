@@ -17,7 +17,7 @@
                 <input type="text" class="form-control" id="user-name" placeholder="Search">
             </div>
         </div>
-        <button class="btn btn-primary">ADD</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-user">ADD</button>
     </div>
 </div>
 <div class="row">
@@ -48,4 +48,144 @@
             </div>
               </div>
   </div>
+
+            <div class="modal fade" id="add-user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a new user</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="register-form">
+                  <div class="divider d-flex align-items-center my-4">
+                  </div>
+                  {% csrf_token %}
+                  <!-- First Name input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="fname" class="form-control form-control-lg"
+                      placeholder="First Name" required />
+                    <div class="fname-mess"></div>
+                  </div>
+                  <!-- Last Name input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="lname" class="form-control form-control-lg"
+                      placeholder="Last Name" required />
+                    <div class="lname-mess"></div>
+                  </div>
+                  <!-- Gender input -->
+                  <div class="form-outline mb-4">
+                    <select class="form-control form-control-lg" id="user-gender">
+                        <option value="">Select Gender</option>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                    </select>
+                    <div class="gender-mess"></div>
+                  </div>
+                  <!-- Date of Birth input -->
+                  <div class="form-outline mb-4">
+                    <input type="date" id="birth_of_date" class="form-control form-control-lg"
+                      required />
+                    <div class="bod-mess"></div>
+                  </div>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="email" class="form-control form-control-lg"
+                      placeholder="Email" required />
+                    <div class="email-mess"></div>
+                  </div>
+                  <!-- Phone Number input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="phone_number" class="form-control form-control-lg"
+                      placeholder="Phone Number" required />
+                    <div class="phone-mess"></div>
+                  </div>
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="password" class="form-control form-control-lg"
+                      placeholder="Enter Password" required />
+                    <div class="pass-mess"></div>
+                  </div>
+                  <!-- Confirm Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="password" id="confirm_password" class="form-control form-control-lg"
+                      placeholder="Confirm Password" required />
+                    <div class="pass2-mess"></div>
+                  </div>
+                </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-add-user">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="modal fade" id="update-user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update user info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="register-form">
+                  <div class="divider d-flex align-items-center my-4">
+                  </div>
+                  {% csrf_token %}
+                  <!-- First Name input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="new-fname" class="form-control form-control-lg"
+                      placeholder="First Name" required />
+                    <div class="fname-mess"></div>
+                  </div>
+                  <!-- Last Name input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="new-lname" class="form-control form-control-lg"
+                      placeholder="Last Name" required />
+                    <div class="lname-mess"></div>
+                  </div>
+                  <!-- Gender input -->
+                  <div class="form-outline mb-4">
+                    <select class="form-control form-control-lg" id="new-user-gender">
+                        <option value="">Select Gender</option>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                    </select>
+                    <div class="gender-mess"></div>
+                  </div>
+                  <!-- Date of Birth input -->
+                  <div class="form-outline mb-4">
+                    <input type="date" id="new-birth_of_date" class="form-control form-control-lg"
+                      required />
+                    <div class="bod-mess"></div>
+                  </div>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <input type="email" id="new-email" class="form-control form-control-lg"
+                      placeholder="Email" required />
+                    <div class="email-mess"></div>
+                  </div>
+                  <!-- Phone Number input -->
+                  <div class="form-outline mb-4">
+                    <input type="text" id="new-phone_number" class="form-control form-control-lg"
+                      placeholder="Phone Number" required />
+                    <div class="phone-mess"></div>
+                  </div>
+                  <!-- Password input -->
+                  <div class="form-outline mb-3">
+                    <input type="text" id="new-password" class="form-control form-control-lg"
+                      placeholder="Enter Password" required />
+                    <div class="pass-mess"></div>
+                  </div>
+                </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-update-user">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

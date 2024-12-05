@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['first_name', 'last_name', 'phone_number', 'email', 'birth_of_date']
+        fields = ['first_name', 'last_name', 'phone_number', 'email', 'birth_of_date', 'gender']
 
 class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
@@ -87,6 +87,7 @@ class MyOrderSerializer(serializers.Serializer):
     province = serializers.CharField()
     total = serializers.IntegerField()
     created_at = serializers.DateTimeField()
+    status = serializers.IntegerField()
 
 class MyOrderDetailItemsSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -111,4 +112,5 @@ class MyOrderDetailsSerializer(serializers.Serializer):
     orderItems = serializers.ListField(child=MyOrderDetailItemsSerializer())
     payment_method = serializers.CharField()
 
-
+class SearchSerializer(serializers.Serializer):
+    search = serializers.CharField()

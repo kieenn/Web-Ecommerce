@@ -111,7 +111,7 @@ def get_products_info(request):
     try:
         # If you want to get ALL products:
         all_products = Products.objects.filter(
-            Q(productsskus__isnull=False)
+            Q(productsskus__isnull=False), status = 1
         )
         all_products = set(all_products)
 
@@ -193,7 +193,7 @@ def add_to_cart(request, id):
     success_count = 0
     for product_data in products_data:
         try:
-            product_id = product_data.get('product_id')
+            product_id = product_data.get('id')
             color = product_data.get('color')
             size = product_data.get('size')
             quantity = int(product_data.get('quantity', 1))
@@ -400,24 +400,42 @@ def get_order_detail(request,id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
-def update_profile(request):
+@api_view(['PUT'])
+def update_profile(request, id):
     try:
-        profile_data = request.data
-        serializer = UserInfoSerializer(data=profile_data)
+        user = Users.objects.get(id=id)  # Use id to get user
+        serializer = UserInfoSerializer(user, data=request.data, partial=True) # partial=True for PATCH, remove for PUT
+
         if serializer.is_valid():
-            first_name = serializer.validated_data.get('first_name')
-            last_name = serializer.validated_data.get('last_name')
-            email = serializer.validated_data.get('email')
-            phone_number = serializer.validated_data.get('phone_number')
-            birth_of_date = serializer.validated_data.get('birth_of_date')
-            gender = serializer.validated_data.get('gender')
-            user = Users.objects.get(phone_number=phone_number)
-            user.update_profile(first_name, last_name, email, phone_number, birth_of_date, gender)
+            serializer.save()
             return Response({"message": "Profile updated successfully!"}, status=status.HTTP_200_OK)
         else:
+            print(serializer.errors)  # Print errors for debugging
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except Users.DoesNotExist: # Catch DoesNotExist separately
+        return Response({"error":"No user found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def product_search(request):
+    try:
+        search_query = request.query_params.get('search', '')  # Get search from query parameters
+        if not search_query:
+            return Response({"error": "Search parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        all_products = Products.objects.filter(
+            Q(productsskus__isnull=False), name__icontains=search_query
+        )
+        all_products = set(all_products)
+        product_info_list = [
+            product.get_product_info() for product in all_products
+        ]
+        serializer = ProductInfoSerializer(product_info_list, many=True)  # Serialize the queryset
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
